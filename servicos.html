@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiS Beauty | Serviços</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="brand-mark small">LiS</div><div><strong>LiS Beauty</strong><span>Admin</span></div></div>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="clientes.html">Clientes</a>
+        <a class="active" href="servicos.html">Serviços</a>
+        <a href="profissionais.html">Profissionais</a>
+        <a href="agenda.html">Agenda</a>
+      </nav>
+      <button id="logoutBtn" class="btn-secondary">Sair</button>
+    </aside>
+    <main class="content">
+      <header class="topbar"><div><h1>Serviços</h1><p class="muted">Catálogo atual da LiS Beauty</p></div></header>
+      <section class="panel">
+        <div id="servicosLista" class="service-grid"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/servicos.js"></script>
+</body>
+</html>

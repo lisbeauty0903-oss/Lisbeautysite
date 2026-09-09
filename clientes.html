@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiS Beauty | Clientes</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="brand-mark small">LiS</div><div><strong>LiS Beauty</strong><span>Admin</span></div></div>
+      <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a class="active" href="clientes.html">Clientes</a>
+        <a href="servicos.html">Serviços</a>
+        <a href="profissionais.html">Profissionais</a>
+        <a href="agenda.html">Agenda</a>
+      </nav>
+      <button id="logoutBtn" class="btn-secondary">Sair</button>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div><h1>Clientes</h1><p class="muted">Cadastro e histórico de clientes</p></div>
+      </header>
+
+      <section class="panel">
+        <div class="panel-header"><h2>Novo cliente</h2></div>
+        <form id="clienteForm" class="form-grid">
+          <input id="clienteNome" placeholder="Nome completo" required />
+          <input id="clienteTelefone" placeholder="Telefone" required />
+          <input id="clienteEmail" type="email" placeholder="E-mail" />
+          <input id="clienteNascimento" type="date" />
+          <textarea id="clienteObservacoes" placeholder="Observações"></textarea>
+          <button type="submit" class="btn-primary">Salvar cliente</button>
+        </form>
+        <p id="clienteMessage" class="form-message"></p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header"><h2>Clientes cadastrados</h2></div>
+        <div id="clientesLista" class="table-wrap"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/clientes.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiS Beauty | Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark small">LiS</div>
+        <div>
+          <strong>LiS Beauty</strong>
+          <span>Admin</span>
+        </div>
+      </div>
+
+      <nav>
+        <a class="active" href="dashboard.html">Dashboard</a>
+        <a href="clientes.html">Clientes</a>
+        <a href="servicos.html">Serviços</a>
+        <a href="profissionais.html">Profissionais</a>
+        <a href="agenda.html">Agenda</a>
+      </nav>
+
+      <button id="logoutBtn" class="btn-secondary">Sair</button>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <h1>Dashboard</h1>
+          <p class="muted">Visão geral da operação</p>
+        </div>
+        <div class="user-chip" id="userName">Administrador</div>
+      </header>
+
+      <section class="cards-grid">
+        <article class="metric-card">
+          <span>Agendamentos hoje</span>
+          <strong id="agendamentosHoje">0</strong>
+        </article>
+        <article class="metric-card">
+          <span>Clientes atendidos</span>
+          <strong id="clientesAtendidos">0</strong>
+        </article>
+        <article class="metric-card">
+          <span>Faturamento previsto</span>
+          <strong id="faturamentoPrevisto">R$ 0,00</strong>
+        </article>
+        <article class="metric-card">
+          <span>Faturamento recebido</span>
+          <strong id="faturamentoRecebido">R$ 0,00</strong>
+        </article>
+      </section>
+
+      <section class="panel-grid">
+        <article class="panel">
+          <div class="panel-header">
+            <h2>Próximos horários</h2>
+            <a href="agenda.html">Ver agenda</a>
+          </div>
+          <div id="proximosAgendamentos" class="empty-state">
+            Nenhum agendamento encontrado.
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-header">
+            <h2>Atalhos</h2>
+          </div>
+          <div class="quick-actions">
+            <a href="clientes.html" class="action-card">Novo cliente</a>
+            <a href="agenda.html" class="action-card">Novo agendamento</a>
+            <a href="servicos.html" class="action-card">Serviços</a>
+            <a href="profissionais.html" class="action-card">Profissionais</a>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

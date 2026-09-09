@@ -1,0 +1,297 @@
+:root {
+  --bg: #171412;
+  --panel: #211d1a;
+  --panel-2: #2b2420;
+  --gold: #caa56a;
+  --terracotta: #a86f5b;
+  --text: #f6efe8;
+  --muted: #b8aaa0;
+  --border: rgba(255,255,255,.08);
+  --danger: #d26c6c;
+  --success: #7fba8d;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a { color: inherit; text-decoration: none; }
+
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.login-shell {
+  width: min(980px, 100%);
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--panel);
+}
+
+.brand-panel {
+  min-height: 560px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px;
+  background:
+    radial-gradient(circle at top left, rgba(202,165,106,.18), transparent 35%),
+    linear-gradient(145deg, #181310, #2a201b);
+}
+
+.brand-panel h1 { font-size: 48px; margin: 18px 0 4px; }
+.brand-panel p { color: var(--muted); }
+
+.brand-mark {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  display: grid; place-items: center;
+  color: var(--gold);
+  font-family: Georgia, serif;
+  font-size: 30px;
+}
+
+.brand-mark.small {
+  width: 42px; height: 42px;
+  font-size: 17px;
+}
+
+.login-card {
+  padding: 64px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+label { display: block; margin: 16px 0 8px; color: var(--muted); }
+
+input, textarea, select {
+  width: 100%;
+  padding: 13px 14px;
+  background: #171412;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  outline: none;
+}
+
+textarea { min-height: 100px; resize: vertical; }
+
+input:focus, textarea:focus, select:focus { border-color: var(--gold); }
+
+.btn-primary, .btn-secondary {
+  border: 0;
+  border-radius: 10px;
+  padding: 13px 18px;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: #1a1512;
+  font-weight: 700;
+  margin-top: 18px;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.muted { color: var(--muted); }
+
+.form-message { margin-top: 12px; min-height: 20px; }
+.form-message.error { color: var(--danger); }
+.form-message.success { color: var(--success); }
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 250px 1fr;
+}
+
+.sidebar {
+  padding: 24px;
+  border-right: 1px solid var(--border);
+  background: #151210;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-brand strong, .sidebar-brand span { display: block; }
+.sidebar-brand span { color: var(--muted); font-size: 12px; margin-top: 3px; }
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.sidebar nav a {
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: var(--muted);
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+  background: rgba(202,165,106,.10);
+  color: var(--gold);
+}
+
+.content { padding: 32px; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.topbar h1 { margin: 0 0 6px; }
+
+.user-chip {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  border-radius: 999px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.metric-card, .panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+.metric-card { padding: 20px; }
+.metric-card span { color: var(--muted); display: block; margin-bottom: 12px; }
+.metric-card strong { font-size: 28px; color: var(--gold); }
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: 1.3fr .7fr;
+  gap: 20px;
+}
+
+.panel { padding: 20px; margin-bottom: 20px; }
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.panel-header h2 { margin: 0; font-size: 18px; }
+.panel-header a { color: var(--gold); font-size: 14px; }
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.action-card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.empty-state {
+  padding: 28px;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.form-grid textarea,
+.form-grid button {
+  grid-column: span 2;
+}
+
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+th { color: var(--gold); font-weight: 600; }
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.service-card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.service-card h3 { margin-top: 0; }
+.service-card .price { color: var(--gold); font-size: 20px; font-weight: 700; }
+
+@media (max-width: 900px) {
+  .app-shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; border-right: 0; border-bottom: 1px solid var(--border); }
+  .sidebar nav { flex-direction: row; flex-wrap: wrap; }
+  .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  .panel-grid { grid-template-columns: 1fr; }
+  .service-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .login-shell { grid-template-columns: 1fr; }
+  .brand-panel { min-height: auto; padding: 38px; }
+  .login-card { padding: 38px 26px; }
+  .cards-grid, .service-grid, .form-grid { grid-template-columns: 1fr; }
+  .form-grid textarea, .form-grid button { grid-column: auto; }
+  .content { padding: 20px; }
+}

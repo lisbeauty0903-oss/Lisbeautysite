@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiS Beauty | Login</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="login-page">
+  <main class="login-shell">
+    <section class="brand-panel">
+      <div class="brand-mark">LiS</div>
+      <h1>LiS Beauty</h1>
+      <p>Sistema administrativo</p>
+    </section>
+
+    <section class="login-card">
+      <h2>Entrar</h2>
+      <p class="muted">Acesse a área administrativa do studio.</p>
+
+      <form id="loginForm">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" placeholder="seuemail@exemplo.com" required />
+
+        <label for="password">Senha</label>
+        <input id="password" type="password" placeholder="Sua senha" required />
+
+        <button type="submit" class="btn-primary">Entrar</button>
+        <p id="loginMessage" class="form-message"></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
