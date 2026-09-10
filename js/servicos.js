@@ -1,35 +1,9 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  if (SUPABASE_URL.includes("COLE_AQUI")) return;
-
-  const container = document.getElementById("servicosLista");
-
-  const { data, error } = await supabaseClient
-    .from("servicos")
-    .select("nome,categoria,duracao_minutos,valor,tipo_preco,ativo")
-    .eq("ativo", true)
-    .order("categoria")
-    .order("nome");
-
-  if (error) {
-    container.innerHTML = `<div class="empty-state">Erro ao carregar serviços.</div>`;
-    console.error(error);
-    return;
-  }
-
-  container.innerHTML = (data || []).map(servico => {
-    const prefixo = servico.tipo_preco === "a_partir_de" ? "A partir de " : "";
-    const preco = Number(servico.valor).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL"
-    });
-
-    return `
-      <article class="service-card">
-        <span class="muted">${servico.categoria || "Serviço"}</span>
-        <h3>${servico.nome}</h3>
-        <div class="price">${prefixo}${preco}</div>
-        <p class="muted">${servico.duracao_minutos} min</p>
-      </article>
-    `;
-  }).join("");
-});
+let servicosCache=[];
+const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+const moeda=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+function limparServico(){servicoForm.reset();servicoId.value="";servicoTipoPreco.value="fixo";servicoFormTitle.textContent="Novo serviço";servicoMessage.textContent="";}
+function renderServicos(){const c=servicosLista;if(!servicosCache.length){c.innerHTML='<div class="empty-state">Nenhum serviço cadastrado.</div>';return;}c.innerHTML=servicosCache.map(s=>`<article class="service-card"><span class="muted">${esc(s.categoria||"Serviço")}</span><h3>${esc(s.nome)}</h3><div class="price">${s.tipo_preco==="a_partir_de"?"A partir de ":""}${moeda(s.valor)}</div><p class="muted">${s.duracao_minutos} min</p>${s.descricao?`<p>${esc(s.descricao)}</p>`:""}<div class="card-actions"><button class="btn-small" onclick="editarServico('${s.id}')">Editar</button><button class="btn-small danger" onclick="excluirServico('${s.id}')">Excluir</button></div></article>`).join("");}
+async function carregarServicos(){const{data,error}=await supabaseClient.from("servicos").select("id,nome,categoria,descricao,duracao_minutos,valor,tipo_preco,ativo").eq("ativo",true).order("categoria").order("nome");if(error){console.error(error);return;}servicosCache=data||[];renderServicos();}
+window.editarServico=id=>{const s=servicosCache.find(x=>x.id===id);if(!s)return;servicoId.value=s.id;servicoNome.value=s.nome||"";servicoCategoria.value=s.categoria||"";servicoDuracao.value=s.duracao_minutos||"";servicoValor.value=s.valor||"";servicoTipoPreco.value=s.tipo_preco||"fixo";servicoDescricao.value=s.descricao||"";servicoFormTitle.textContent="Editar serviço";servicoFormPanel.scrollIntoView({behavior:"smooth"});}
+window.excluirServico=async id=>{const s=servicosCache.find(x=>x.id===id);if(!s||!confirm(`Excluir o serviço "${s.nome}" do catálogo?`))return;const{error}=await supabaseClient.from("servicos").update({ativo:false}).eq("id",id);if(error){alert("Não foi possível excluir o serviço.");console.error(error);return;}limparServico();await carregarServicos();}
+document.addEventListener("DOMContentLoaded",async()=>{await carregarServicos();novoServicoBtn.onclick=()=>{limparServico();servicoFormPanel.scrollIntoView({behavior:"smooth"});};cancelarServicoBtn.onclick=limparServico;servicoForm.onsubmit=async e=>{e.preventDefault();const id=servicoId.value,p={nome:servicoNome.value.trim(),categoria:servicoCategoria.value.trim()||null,descricao:servicoDescricao.value.trim()||null,duracao_minutos:Number(servicoDuracao.value),valor:Number(servicoValor.value),tipo_preco:servicoTipoPreco.value,ativo:true};const q=id?supabaseClient.from("servicos").update(p).eq("id",id):supabaseClient.from("servicos").insert(p);const{error}=await q;if(error){servicoMessage.textContent="Erro ao salvar serviço.";servicoMessage.className="form-message error";console.error(error);return;}servicoMessage.textContent=id?"Serviço atualizado com sucesso.":"Serviço cadastrado com sucesso.";servicoMessage.className="form-message success";setTimeout(async()=>{limparServico();await carregarServicos();},400);};});

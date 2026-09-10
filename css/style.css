@@ -295,3 +295,22 @@ th { color: var(--gold); font-weight: 600; }
   .form-grid textarea, .form-grid button { grid-column: auto; }
   .content { padding: 20px; }
 }
+
+
+/* CRUD V1.1 */
+.top-action { margin-top: 0; white-space: nowrap; }
+.form-actions { grid-column: span 2; display:flex; gap:10px; align-items:center; }
+.form-actions .btn-primary { margin-top:0; }
+.search-input { max-width:280px; padding:10px 12px; }
+.actions-cell { white-space:nowrap; }
+.btn-small { border:1px solid var(--border); background:var(--panel-2); color:var(--text); border-radius:8px; padding:8px 11px; margin-right:6px; cursor:pointer; }
+.btn-small:hover { border-color:var(--gold); }
+.btn-small.danger { border-color:rgba(210,108,108,.35); color:#ef9c9c; }
+.card-actions { display:flex; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
+
+@media (max-width:640px) {
+  .topbar { align-items:flex-start; flex-direction:column; }
+  .top-action { width:100%; }
+  .form-actions { grid-column:auto; flex-direction:column; align-items:stretch; }
+  .search-input { max-width:none; width:100%; }
+}

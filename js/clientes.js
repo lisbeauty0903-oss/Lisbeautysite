@@ -1,80 +1,8 @@
-async function carregarClientes() {
-  const container = document.getElementById("clientesLista");
-
-  const { data, error } = await supabaseClient
-    .from("clientes")
-    .select("id,nome,telefone,email,data_nascimento,ativo")
-    .order("nome");
-
-  if (error) {
-    container.innerHTML = `<div class="empty-state">Erro ao carregar clientes.</div>`;
-    console.error(error);
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    container.innerHTML = `<div class="empty-state">Nenhum cliente cadastrado.</div>`;
-    return;
-  }
-
-  container.innerHTML = `
-    <table>
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Telefone</th>
-          <th>E-mail</th>
-          <th>Nascimento</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${data.map(cliente => `
-          <tr>
-            <td>${cliente.nome || ""}</td>
-            <td>${cliente.telefone || ""}</td>
-            <td>${cliente.email || ""}</td>
-            <td>${cliente.data_nascimento || ""}</td>
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
-}
-
-document.addEventListener("DOMContentLoaded", async () => {
-  if (SUPABASE_URL.includes("COLE_AQUI")) return;
-
-  await carregarClientes();
-
-  const form = document.getElementById("clienteForm");
-  const message = document.getElementById("clienteMessage");
-
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const payload = {
-      nome: document.getElementById("clienteNome").value.trim(),
-      telefone: document.getElementById("clienteTelefone").value.trim(),
-      email: document.getElementById("clienteEmail").value.trim() || null,
-      data_nascimento: document.getElementById("clienteNascimento").value || null,
-      observacoes: document.getElementById("clienteObservacoes").value.trim() || null,
-      ativo: true
-    };
-
-    const { error } = await supabaseClient.from("clientes").insert(payload);
-
-    if (error) {
-      message.textContent = error.message.includes("duplicate")
-        ? "Este telefone já está cadastrado."
-        : "Erro ao cadastrar cliente.";
-      message.className = "form-message error";
-      console.error(error);
-      return;
-    }
-
-    message.textContent = "Cliente cadastrado com sucesso.";
-    message.className = "form-message success";
-    form.reset();
-    await carregarClientes();
-  });
-});
+let clientesCache=[];
+const esc=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+function limparCliente(){document.getElementById("clienteForm").reset();document.getElementById("clienteId").value="";document.getElementById("clienteFormTitle").textContent="Novo cliente";document.getElementById("clienteMessage").textContent="";}
+function renderClientes(lista){const c=document.getElementById("clientesLista");if(!lista.length){c.innerHTML='<div class="empty-state">Nenhum cliente cadastrado.</div>';return;}c.innerHTML=`<table><thead><tr><th>Nome</th><th>Telefone</th><th>E-mail</th><th>Nascimento</th><th>Ações</th></tr></thead><tbody>${lista.map(x=>`<tr><td>${esc(x.nome)}</td><td>${esc(x.telefone)}</td><td>${esc(x.email)}</td><td>${esc(x.data_nascimento)}</td><td class="actions-cell"><button class="btn-small" onclick="editarCliente('${x.id}')">Editar</button><button class="btn-small danger" onclick="excluirCliente('${x.id}')">Excluir</button></td></tr>`).join("")}</tbody></table>`;}
+async function carregarClientes(){const{data,error}=await supabaseClient.from("clientes").select("id,nome,telefone,email,data_nascimento,observacoes,ativo").eq("ativo",true).order("nome");if(error){console.error(error);return;}clientesCache=data||[];renderClientes(clientesCache);}
+window.editarCliente=id=>{const x=clientesCache.find(c=>c.id===id);if(!x)return;clienteId.value=x.id;clienteNome.value=x.nome||"";clienteTelefone.value=x.telefone||"";clienteEmail.value=x.email||"";clienteNascimento.value=x.data_nascimento||"";clienteObservacoes.value=x.observacoes||"";clienteFormTitle.textContent="Editar cliente";clienteFormPanel.scrollIntoView({behavior:"smooth"});}
+window.excluirCliente=async id=>{const x=clientesCache.find(c=>c.id===id);if(!x||!confirm(`Excluir ${x.nome} da lista de clientes?`))return;const{error}=await supabaseClient.from("clientes").update({ativo:false}).eq("id",id);if(error){alert("Não foi possível excluir o cliente.");console.error(error);return;}limparCliente();await carregarClientes();}
+document.addEventListener("DOMContentLoaded",async()=>{await carregarClientes();novoClienteBtn.onclick=()=>{limparCliente();clienteFormPanel.scrollIntoView({behavior:"smooth"});};cancelarClienteBtn.onclick=limparCliente;buscaCliente.oninput=e=>{const t=e.target.value.toLowerCase();renderClientes(clientesCache.filter(x=>[x.nome,x.telefone,x.email].some(v=>(v||"").toLowerCase().includes(t))));};clienteForm.onsubmit=async e=>{e.preventDefault();const id=clienteId.value,p={nome:clienteNome.value.trim(),telefone:clienteTelefone.value.trim(),email:clienteEmail.value.trim()||null,data_nascimento:clienteNascimento.value||null,observacoes:clienteObservacoes.value.trim()||null,ativo:true};const q=id?supabaseClient.from("clientes").update(p).eq("id",id):supabaseClient.from("clientes").insert(p);const{error}=await q;if(error){clienteMessage.textContent=error.message.includes("duplicate")?"Este telefone já está cadastrado.":"Erro ao salvar cliente.";clienteMessage.className="form-message error";return;}clienteMessage.textContent=id?"Cliente atualizado com sucesso.":"Cliente cadastrado com sucesso.";clienteMessage.className="form-message success";setTimeout(async()=>{limparCliente();await carregarClientes();},400);};});
