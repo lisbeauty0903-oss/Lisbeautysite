@@ -314,3 +314,63 @@ th { color: var(--gold); font-weight: 600; }
   .form-actions { grid-column:auto; flex-direction:column; align-items:stretch; }
   .search-input { max-width:none; width:100%; }
 }
+
+
+/* V1.2 - Profissionais, serviços e horários */
+.full-field { grid-column: span 2; }
+.full-field > label { margin-top: 6px; font-weight: 700; color: var(--text); }
+.small-text { font-size: 13px; margin-top: -4px; }
+
+.check-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.check-card {
+  margin: 0;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel-2);
+  cursor: pointer;
+}
+
+.check-card input { width: auto; margin-top: 3px; }
+.check-card strong, .check-card small { display: block; }
+.check-card small { margin-top: 3px; color: var(--muted); }
+
+.schedule-table {
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.schedule-row {
+  display: grid;
+  grid-template-columns: 1.2fr .55fr repeat(4, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.schedule-row:last-child { border-bottom: 0; }
+.schedule-head { background: var(--panel-2); color: var(--gold); font-size: 13px; font-weight: 700; }
+.schedule-row input[type="checkbox"] { width: auto; justify-self: start; }
+.schedule-row input[type="time"] { min-width: 0; padding: 9px 8px; }
+
+@media (max-width: 900px) {
+  .check-grid { grid-template-columns: repeat(2, 1fr); }
+  .schedule-table { overflow-x: auto; }
+  .schedule-row { min-width: 780px; }
+}
+@media (max-width: 640px) {
+  .full-field { grid-column: auto; }
+  .check-grid { grid-template-columns: 1fr; }
+}
