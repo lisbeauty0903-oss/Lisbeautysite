@@ -410,3 +410,6 @@ th { color: var(--gold); font-weight: 600; }
 .agenda-quick-actions button{border:1px solid var(--border);background:transparent;color:var(--text);border-radius:7px;padding:5px 7px;font-size:10px;cursor:pointer}
 .agenda-quick-actions button:hover{border-color:var(--gold);color:var(--gold)}.agenda-quick-actions .danger-text{color:#ef9c9c}
 .specialty-chip{display:inline-flex;align-items:center;padding:5px 9px;margin:2px 4px 2px 0;border:1px solid rgba(202,165,106,.28);background:rgba(202,165,106,.08);color:var(--gold);border-radius:999px;font-size:12px;white-space:nowrap}
+
+/* V1.7 Financeiro e Relatórios */
+.filter-panel{margin-bottom:18px}.report-filters{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.report-filters>div{min-width:170px;flex:1}.report-filters label{display:block;margin-bottom:6px}.table-scroll{overflow:auto}.report-table{width:100%;border-collapse:collapse;min-width:760px}.report-table th,.report-table td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--border);font-size:13px}.report-table th{color:var(--gold)}.report-rank{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--border)}.report-rank:last-child{border-bottom:0}.report-rank div strong,.report-rank div span{display:block}.report-rank div span{font-size:12px;color:var(--muted);margin-top:3px}

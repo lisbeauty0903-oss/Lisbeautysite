@@ -13,7 +13,7 @@ async function loadDashboard(){
   supabaseClient.from("servicos").select("id,nome",{count:"exact"}).eq("ativo",true)
  ]);
  for(const r of [ar,cr,pr,sr])if(r.error)throw r.error;
- const ag=ar.data||[],cl=cr.data||[],pf=pr.data||[],today=ag.filter(a=>new Date(a.inicio)>=s&&new Date(a.inicio)<=e),active=today.filter(a=>a.status!=="cancelado"),week=ag.filter(a=>a.status!=="cancelado");
+ const ag=ar.data||[],cl=cr.data||[],pf=pr.data||[],today=ag.filter(a=>new Date(a.inicio)>=s&&new Date(a.inicio)<=e),active=today.filter(a=>a.status!=="cancelado"),week=ag.filter(a=>new Date(a.inicio)>e&&a.status!=="cancelado");
  const predicted=active.reduce((t,a)=>t+Math.max(0,Number(a.valor_total||0)-Number(a.desconto||0)),0),received=active.reduce((t,a)=>t+Number(a.valor_pago||0),0);
  D("kpiHoje").textContent=active.length;D("kpiHojeDetalhe").textContent=active.length===1?"1 atendimento ativo":`${active.length} atendimentos ativos`;D("kpiSemana").textContent=week.length;D("kpiPrevisto").textContent=cur(predicted);D("kpiRecebido").textContent=cur(received);D("kpiRecebidoDetalhe").textContent=predicted?`${Math.round(received/predicted*100)}% do previsto`:"Sem valor previsto";
  D("totalClientes").textContent=cr.count??cl.length;D("totalProfissionais").textContent=pr.count??pf.length;D("totalServicos").textContent=sr.count??(sr.data||[]).length;D("totalConcluidos").textContent=today.filter(a=>a.status==="concluido").length;

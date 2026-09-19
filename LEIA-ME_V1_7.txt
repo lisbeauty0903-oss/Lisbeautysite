@@ -1,0 +1,16 @@
+LiS Beauty V1.7 — Financeiro e Relatórios
+
+Não há SQL novo.
+
+Inclui:
+- Financeiro com filtros por período, profissional e status.
+- Previsto, recebido, pendente e quantidade de atendimentos.
+- Formas de pagamento.
+- Exportação CSV compatível com Excel.
+- Relatórios de atendimentos, concluídos, cancelados e faltas.
+- Resumo por profissional e serviços realizados.
+- Exportação de relatório em CSV.
+- Correção do Dashboard: Próximos 7 dias agora exclui os atendimentos de hoje.
+
+Publicação:
+Substitua os arquivos do repositório, Commit to main, Push origin e Ctrl+F5.
