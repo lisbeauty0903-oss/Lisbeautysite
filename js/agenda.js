@@ -35,6 +35,7 @@ async function serviceMap(){
 }
 async function renderDiaProfissional(){
  const [ini,fim]=range(), pf=$("filtroProfissional").value, sf=$("filtroStatus")?.value||"";
+ const mapaServicos=await serviceMap();
  const dia=ds(ref);
  const profs=P.filter(p=>!pf||p.id===pf);
  const ag=A.filter(x=>ds(new Date(x.inicio))===dia&&(!pf||x.profissional_id===pf)&&(!sf||x.status===sf));
@@ -51,7 +52,7 @@ async function renderDiaProfissional(){
  const mins=d=>d.getHours()*60+d.getMinutes();
  const pName=id=>P.find(p=>p.id===id)?.nome||"Profissional";
  const cName=id=>C.find(c=>c.id===id)?.nome||"Cliente";
- const servicesFor=id=>(AS.filter(l=>l.agendamento_id===id).map(l=>S.find(s=>s.id===l.servico_id)?.nome).filter(Boolean).join(", ")||"—");
+ const servicesFor=id=>(mapaServicos[id]||[]).map(sid=>S.find(s=>s.id===sid)?.nome).filter(Boolean).join(", ")||"—";
 
  if(!profs.length){$("agendaGrid").innerHTML='<div class="empty-state">Nenhum profissional disponível.</div>';return}
 
@@ -63,7 +64,7 @@ async function renderDiaProfissional(){
      const st=new Date(a.inicio), en=new Date(a.fim);
      const sm=Math.max(minStart,mins(st)), em=Math.min(maxEnd,mins(en));
      const top=((sm-minStart)/step)*slotH, height=Math.max(38,((em-sm)/step)*slotH-4);
-     items.push(`<article class="day-event status-${a.status}" style="top:${top}px;height:${height}px" onclick="openA('${a.id}')">
+     items.push(`<article class="day-event status-${a.status}" style="top:${top}px;height:${height}px" onclick="editA('${a.id}')">
        <strong>${st.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}–${en.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</strong>
        <b>${esc(cName(a.cliente_id))}</b><small>${esc(servicesFor(a.id))}</small>
      </article>`);
@@ -88,20 +89,23 @@ async function renderDiaProfissional(){
  document.querySelectorAll(".day-free-slot").forEach(btn=>btn.addEventListener("click",e=>{
    if(e.target.closest(".day-event"))return;
    const pid=btn.dataset.prof, m=Number(btn.dataset.min);
-   openA();
-   $("aProf").value=pid;
-   $("aData").value=dia;
-   $("aProf").dispatchEvent(new Event("change"));
+   clearA();
+   $("agendaProfissional").value=pid;
+   $("agendaData").value=dia;
+   profServices([]);
+   openP("agendamentoPanel");
+   $("agendaProfissional").dispatchEvent(new Event("change"));
    setTimeout(()=>{
-     $("aData").dispatchEvent(new Event("change"));
+     $("agendaData").dispatchEvent(new Event("change"));
      setTimeout(()=>{
-       const wanted=fmt(m), opt=[...$("aHora").options].find(o=>o.value===wanted);
-       if(opt)$("aHora").value=wanted;
-     },100);
-   },50);
+       const wanted=fmt(m), opt=[...$("agendaHorario").options].find(o=>o.value===wanted);
+       if(opt)$("agendaHorario").value=wanted;
+     },150);
+   },80);
  }));
 }
-function render(){
+async function render(){
+ if(view==="dia")return await renderDiaProfissional();
  let [i,f]=range(),pf=$("filtroProfissional").value,sf=$("filtroStatus")?.value||"",m=await serviceMap(),days=[];
  let visible=A.filter(x=>(!pf||x.profissional_id===pf)&&(!sf||x.status===sf));
  $("agendaKpiTotal").textContent=visible.filter(x=>x.status!=="cancelado").length;
@@ -199,6 +203,8 @@ window.openFinish=async id=>{
 
 async function saveB(e){e.preventDefault();try{let pid=$("bloqueioProfissional").value,date=$("bloqueioData").value,a=$("bloqueioInicio").value,z=$("bloqueioFim").value;if(!pid||!date||!a||!z)throw Error("Preencha os campos.");if(z<=a)throw Error("O fim deve ser maior que o início.");let r=await supabaseClient.from("bloqueios_agenda").insert({profissional_id:pid,inicio:dt(date,a).toISOString(),fim:dt(date,z).toISOString(),motivo:$("bloqueioMotivo").value.trim()||null});if(r.error)throw r.error;$("bloqueioMessage").textContent="Bloqueio criado.";$("bloqueioMessage").className="form-message success";await events();setTimeout(()=>closeP("bloqueioPanel"),400)}catch(e){$("bloqueioMessage").textContent=e.message;$("bloqueioMessage").className="form-message error"}}
 window.delBlock=async id=>{if(!confirm("Remover este bloqueio?"))return;let r=await supabaseClient.from("bloqueios_agenda").delete().eq("id",id);if(r.error)return alert("Erro ao remover.");await events()};
-document.addEventListener("DOMContentLoaded",async()=>{try{await base();await events();$("novoAgendamentoBtn").onclick=()=>{clearA();$("agendaData").value=ds(new Date());openP("agendamentoPanel")};$("novoBloqueioBtn").onclick=()=>{$("bloqueioForm").reset();$("bloqueioData").value=ds(new Date());openP("bloqueioPanel")};$("cancelarAgendamentoBtn").onclick=()=>closeP("agendamentoPanel");$("cancelarBloqueioBtn").onclick=()=>closeP("bloqueioPanel");document.querySelectorAll("[data-close]").forEach(x=>x.onclick=()=>closeP(x.dataset.close));$("agendaProfissional").onchange=async()=>{profServices([]);$("agendaDuracao").value="0 min";$("agendaValorTotal").value="R$ 0,00";$("agendaTotalFinal").textContent=money(0);$("agendaHorario").value="";$("agendaHorario").disabled=true;await slots()};$("agendaData").onchange=async()=>{$("agendaHorario").value="";await slots()};$("agendaDesconto").oninput=summary;$("agendamentoForm").onsubmit=saveA;$("bloqueioForm").onsubmit=saveB;$("filtroProfissional").onchange=render;$("filtroStatus").onchange=render;
+document.addEventListener("DOMContentLoaded",async()=>{
+ $("irParaData").value=ds(ref);
+ try{await base();await events();$("novoAgendamentoBtn").onclick=()=>{clearA();$("agendaData").value=ds(new Date());openP("agendamentoPanel")};$("novoBloqueioBtn").onclick=()=>{$("bloqueioForm").reset();$("bloqueioData").value=ds(new Date());openP("bloqueioPanel")};$("cancelarAgendamentoBtn").onclick=()=>closeP("agendamentoPanel");$("cancelarBloqueioBtn").onclick=()=>closeP("bloqueioPanel");document.querySelectorAll("[data-close]").forEach(x=>x.onclick=()=>closeP(x.dataset.close));$("agendaProfissional").onchange=async()=>{profServices([]);$("agendaDuracao").value="0 min";$("agendaValorTotal").value="R$ 0,00";$("agendaTotalFinal").textContent=money(0);$("agendaHorario").value="";$("agendaHorario").disabled=true;await slots()};$("agendaData").onchange=async()=>{$("agendaHorario").value="";await slots()};$("agendaDesconto").oninput=summary;$("agendamentoForm").onsubmit=saveA;$("bloqueioForm").onsubmit=saveB;$("filtroProfissional").onchange=render;$("filtroStatus").onchange=render;
  $("irParaData").value=ds(ref);$("irParaData").onchange=async e=>{if(!e.target.value)return;ref=new Date(e.target.value+"T12:00:00");await events()};
  $("hojeBtn").onclick=async()=>{ref=new Date();$("irParaData").value=ds(ref);await events()};$("anteriorBtn").onclick=async()=>{ref.setDate(ref.getDate()+(view==="dia"?-1:-7));$("irParaData").value=ds(ref);await events()};$("proximoBtn").onclick=async()=>{ref.setDate(ref.getDate()+(view==="dia"?1:7));$("irParaData").value=ds(ref);await events()};$("visaoDiaBtn").onclick=async()=>{view="dia";$("visaoDiaBtn").classList.add("active-view");$("visaoSemanaBtn").classList.remove("active-view");await events()};$("visaoSemanaBtn").onclick=async()=>{view="semana";$("visaoSemanaBtn").classList.add("active-view");$("visaoDiaBtn").classList.remove("active-view");await events()}}catch(e){console.error(e);$("agendaGrid").innerHTML=`<div class="empty-state">Erro ao carregar agenda: ${esc(e.message)}</div>`}});

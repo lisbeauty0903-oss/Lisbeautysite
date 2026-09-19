@@ -1,0 +1,23 @@
+LiS Beauty V2.0.2 — Agenda Inteligente (pacote enxuto)
+
+CORREÇÕES
+- Corrigido erro de JavaScript que deixava a agenda presa em "Carregando agenda...".
+- Corrigida inicialização da data.
+- Visão Semana preservada.
+- Visão Dia por horários e profissionais corrigida.
+- Clique em atendimento abre a edição.
+- Clique em horário livre abre Novo agendamento com data e profissional preenchidos.
+- Serviços do atendimento passam a ser carregados corretamente na visão Dia.
+
+PACOTE ENXUTO
+Esta pasta contém somente os arquivos usados pelo site:
+- arquivos HTML
+- css/
+- js/
+- este LEIA-ME da versão atual
+
+Não há SQL novo nesta versão.
+Não execute SQL.
+
+PUBLICAÇÃO
+Substitua os arquivos do site pelos desta pasta, faça Commit to main, Push origin e Ctrl+F5.

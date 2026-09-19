@@ -1,1 +1,0 @@
-LiS Beauty V1.4.1 — correção do estado do Novo Agendamento. Não há SQL novo. Substitua os arquivos no repositório e publique. O formulário agora inicia com 0 min, R$ 0,00, nenhum serviço e horário desabilitado até selecionar profissional, data e serviço.

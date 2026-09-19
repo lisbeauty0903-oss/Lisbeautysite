@@ -1,4 +1,0 @@
-LiS Beauty V1.5 — Dashboard Operacional
-
-Não há SQL novo.
-Substitua os arquivos no repositório, faça Commit to main e Push origin. Depois atualize com Ctrl+F5.
