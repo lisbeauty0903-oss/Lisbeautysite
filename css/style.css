@@ -417,3 +417,7 @@ th { color: var(--gold); font-weight: 600; }
 /* V1.7.1 Comissões */
 #finComissoes,#finStudio{font-size:26px}
 @media(min-width:1200px){body:has(#finComissoes) .dashboard-kpis{grid-template-columns:repeat(3,1fr)}}
+
+/* V1.7.2 Relatórios financeiros */
+@media(min-width:1200px){.report-kpis{grid-template-columns:repeat(4,1fr)}}
+#relComissoes,#relStudio,#relFaturado,#relRecebido{font-size:25px}

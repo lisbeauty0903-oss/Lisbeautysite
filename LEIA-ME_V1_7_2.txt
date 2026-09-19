@@ -1,0 +1,18 @@
+LiS Beauty V1.7.2 — Relatórios Financeiros e Comissões
+
+Não há SQL novo.
+
+Relatórios agora incluem:
+- Faturado em atendimentos concluídos.
+- Valor recebido.
+- Total de comissões.
+- Líquido do Studio.
+- Resultado por profissional: percentual, concluídos, faturado, recebido, comissão e Studio.
+- Serviços realizados considera atendimentos concluídos.
+- Detalhamento financeiro por atendimento.
+- Exportação CSV com resumo financeiro e detalhamento.
+
+A mesma regra do Financeiro é usada:
+Base = valor_total - desconto.
+Comissão = base x percentual_comissao.
+Somente atendimentos concluídos geram comissão.
