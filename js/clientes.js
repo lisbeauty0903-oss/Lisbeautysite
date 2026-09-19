@@ -122,3 +122,27 @@ document.addEventListener("DOMContentLoaded",()=>{
   alert("Ficha técnica salva.");
  });
 });
+
+
+// ===== V1.9.3 - Navegação da ficha em abas =====
+function selecionarFichaTab(nome){
+ document.querySelectorAll(".ficha-tab").forEach(b=>b.classList.toggle("active",b.dataset.fichaTab===nome));
+ document.querySelectorAll(".ficha-tab-panel").forEach(p=>p.classList.toggle("active",p.dataset.fichaPanel===nome));
+ const body=document.querySelector(".ficha-tab-body"); if(body)body.scrollTop=0;
+}
+function selecionarTechTab(nome){
+ document.querySelectorAll(".tech-subtab").forEach(b=>b.classList.toggle("active",b.dataset.techTab===nome));
+ document.querySelectorAll(".tech-panel").forEach(p=>p.classList.toggle("active",p.dataset.techPanel===nome));
+}
+const _abrirFichaClienteV193=abrirFichaCliente;
+abrirFichaCliente=async function(id){
+ selecionarFichaTab("resumo");
+ selecionarTechTab("geral");
+ await _abrirFichaClienteV193(id);
+};
+window.abrirFichaCliente=abrirFichaCliente;
+
+document.addEventListener("DOMContentLoaded",()=>{
+ document.querySelectorAll(".ficha-tab").forEach(b=>b.addEventListener("click",()=>selecionarFichaTab(b.dataset.fichaTab)));
+ document.querySelectorAll(".tech-subtab").forEach(b=>b.addEventListener("click",()=>selecionarTechTab(b.dataset.techTab)));
+});

@@ -6,54 +6,100 @@
 <section class="panel"><div class="panel-header"><h2>Clientes cadastrados</h2><input id="buscaCliente" class="search-input" placeholder="Buscar cliente..."></div><div id="clientesLista" class="table-wrap"></div></section></main></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/config.js"></script><script src="js/auth.js"></script>
 <div id="fichaClienteModal" class="modal-overlay hidden">
-  <div class="modal-card ficha-cliente-card">
-    <div class="modal-header">
-      <div><h2 id="fichaNome">Ficha da cliente</h2><p id="fichaContato" class="muted"></p></div>
-      <button id="fecharFicha" class="icon-btn" type="button">×</button>
-    </div>
-    <section class="ficha-kpis">
-      <article><span>Total de visitas</span><strong id="fichaVisitas">0</strong></article>
-      <article><span>Total gasto</span><strong id="fichaGasto">R$ 0,00</strong></article>
-      <article><span>Último atendimento</span><strong id="fichaUltimo">—</strong></article>
-      <article><span>Serviço mais realizado</span><strong id="fichaFavorito">—</strong></article>
-    </section>
-    <div class="ficha-grid">
-      <section class="panel ficha-section">
-        <div class="panel-header"><div><h3>Histórico de atendimentos</h3><p class="muted">Serviços, profissional, status e valores</p></div></div>
-        <div class="table-scroll"><table class="report-table"><thead><tr><th>Data</th><th>Serviço</th><th>Profissional</th><th>Status</th><th>Valor</th></tr></thead><tbody id="fichaHistorico"></tbody></table></div>
+  <div class="modal-card ficha-cliente-card ficha-tabs-modal">
+    <header class="ficha-sticky-header">
+      <div>
+        <h2 id="fichaNome">Ficha da cliente</h2>
+        <p id="fichaContato" class="muted"></p>
+      </div>
+      <button id="fecharFicha" class="icon-btn" type="button" aria-label="Fechar">×</button>
+    </header>
+
+    <nav class="ficha-tabs" aria-label="Seções da ficha">
+      <button type="button" class="ficha-tab active" data-ficha-tab="resumo">Resumo</button>
+      <button type="button" class="ficha-tab" data-ficha-tab="historico">Histórico</button>
+      <button type="button" class="ficha-tab" data-ficha-tab="anotacoes">Anotações</button>
+      <button type="button" class="ficha-tab" data-ficha-tab="tecnica">Ficha Técnica</button>
+    </nav>
+
+    <div class="ficha-tab-body">
+      <section class="ficha-tab-panel active" data-ficha-panel="resumo">
+        <div class="ficha-kpis">
+          <article><span>Total de visitas</span><strong id="fichaVisitas">0</strong></article>
+          <article><span>Total gasto</span><strong id="fichaGasto">R$ 0,00</strong></article>
+          <article><span>Último atendimento</span><strong id="fichaUltimo">—</strong></article>
+          <article><span>Serviço mais realizado</span><strong id="fichaFavorito">—</strong></article>
+        </div>
+        <div class="ficha-resumo-help">
+          <h3>Visão geral da cliente</h3>
+          <p class="muted">Use as abas acima para consultar o histórico, registrar anotações e atualizar a ficha técnica de beleza.</p>
+        </div>
       </section>
-      <section class="panel ficha-section">
-        <div class="panel-header"><div><h3>Anotações da cliente</h3><p class="muted">Informações úteis para próximos atendimentos</p></div></div>
-        <form id="anotacaoForm" class="note-form"><textarea id="novaAnotacao" rows="3" placeholder="Ex.: preferência, observação para o próximo atendimento..." required></textarea><button class="btn-primary" type="submit">Adicionar anotação</button></form>
-        <div id="listaAnotacoes" class="notes-list"></div>
+
+      <section class="ficha-tab-panel" data-ficha-panel="historico">
+        <div class="panel ficha-section">
+          <div class="panel-header"><div><h3>Histórico de atendimentos</h3><p class="muted">Serviços, profissional, status e valores</p></div></div>
+          <div class="table-scroll"><table class="report-table"><thead><tr><th>Data</th><th>Serviço</th><th>Profissional</th><th>Status</th><th>Valor</th></tr></thead><tbody id="fichaHistorico"></tbody></table></div>
+        </div>
+      </section>
+
+      <section class="ficha-tab-panel" data-ficha-panel="anotacoes">
+        <div class="panel ficha-section">
+          <div class="panel-header"><div><h3>Anotações da cliente</h3><p class="muted">Informações úteis para os próximos atendimentos</p></div></div>
+          <form id="anotacaoForm" class="note-form">
+            <textarea id="novaAnotacao" rows="4" placeholder="Ex.: preferência, observação para o próximo atendimento..." required></textarea>
+            <button class="btn-primary" type="submit">Adicionar anotação</button>
+          </form>
+          <div id="listaAnotacoes" class="notes-list"></div>
+        </div>
+      </section>
+
+      <section class="ficha-tab-panel" data-ficha-panel="tecnica">
+        <div class="panel ficha-tecnica-section ficha-tecnica-tabs-panel">
+          <div class="panel-header">
+            <div><h3>Ficha Técnica de Beleza</h3><p class="muted">Informações profissionais para personalizar os próximos atendimentos</p></div>
+            <span id="fichaTecnicaStatus" class="muted"></span>
+          </div>
+
+          <div class="tech-subtabs">
+            <button type="button" class="tech-subtab active" data-tech-tab="geral">Geral</button>
+            <button type="button" class="tech-subtab" data-tech-tab="cabelo">Cabelo</button>
+            <button type="button" class="tech-subtab" data-tech-tab="unhas">Unhas</button>
+          </div>
+
+          <form id="fichaTecnicaForm">
+            <section class="tech-panel active" data-tech-panel="geral">
+              <div class="technical-grid">
+                <div class="full"><label>Preferências da cliente</label><textarea id="ftPreferencias" rows="3" placeholder="Ex.: estilo, acabamento, cores preferidas, hábitos..."></textarea></div>
+                <div class="full"><label>Alergias ou sensibilidades</label><textarea id="ftAlergias" rows="3" placeholder="Registre somente informações relevantes ao atendimento de beleza."></textarea></div>
+                <div class="full"><label>Produtos utilizados / preferidos</label><textarea id="ftProdutos" rows="3" placeholder="Produtos, marcas ou linhas utilizadas no atendimento."></textarea></div>
+                <div class="full"><label>Recomendações para o próximo atendimento</label><textarea id="ftRecomendacoes" rows="3" placeholder="Orientações para continuidade do atendimento."></textarea></div>
+              </div>
+            </section>
+
+            <section class="tech-panel" data-tech-panel="cabelo">
+              <div class="tech-single">
+                <label>Químicas / histórico químico</label><textarea id="ftCabeloQuimicas" rows="4"></textarea>
+                <label>Cor / tonalidade</label><input id="ftCabeloCor" type="text" placeholder="Ex.: castanho, 6.7, mechas...">
+                <label>Procedimentos anteriores</label><textarea id="ftCabeloProcedimentos" rows="4"></textarea>
+              </div>
+            </section>
+
+            <section class="tech-panel" data-tech-panel="unhas">
+              <div class="tech-single">
+                <label>Formato preferido</label><input id="ftUnhasFormato" type="text" placeholder="Ex.: quadrada, oval, almond...">
+                <label>Técnica</label><input id="ftUnhasTecnica" type="text" placeholder="Ex.: tradicional, gel, alongamento...">
+                <label>Observações</label><textarea id="ftUnhasObs" rows="5"></textarea>
+              </div>
+            </section>
+
+            <div class="technical-actions ficha-save-sticky">
+              <button type="submit" class="btn-primary">Salvar ficha técnica</button>
+            </div>
+          </form>
+        </div>
       </section>
     </div>
-    <section class="panel ficha-tecnica-section">
-      <div class="panel-header"><div><h3>Ficha Técnica de Beleza</h3><p class="muted">Informações profissionais para personalizar os próximos atendimentos</p></div><span id="fichaTecnicaStatus" class="muted"></span></div>
-      <form id="fichaTecnicaForm">
-        <div class="technical-grid">
-          <div class="full"><label>Preferências da cliente</label><textarea id="ftPreferencias" rows="2" placeholder="Ex.: estilo, acabamento, cores preferidas, hábitos..."></textarea></div>
-          <div class="full"><label>Alergias ou sensibilidades</label><textarea id="ftAlergias" rows="2" placeholder="Registre somente informações relevantes ao atendimento de beleza."></textarea></div>
-          <div class="full"><label>Produtos utilizados / preferidos</label><textarea id="ftProdutos" rows="2" placeholder="Produtos, marcas ou linhas utilizadas no atendimento."></textarea></div>
-        </div>
-        <div class="tech-columns">
-          <fieldset class="tech-fieldset"><legend>Cabelo</legend>
-            <label>Químicas / histórico químico</label><textarea id="ftCabeloQuimicas" rows="2"></textarea>
-            <label>Cor / tonalidade</label><input id="ftCabeloCor" type="text" placeholder="Ex.: castanho, 6.7, mechas...">
-            <label>Procedimentos anteriores</label><textarea id="ftCabeloProcedimentos" rows="2"></textarea>
-          </fieldset>
-          <fieldset class="tech-fieldset"><legend>Unhas</legend>
-            <label>Formato preferido</label><input id="ftUnhasFormato" type="text" placeholder="Ex.: quadrada, oval, almond...">
-            <label>Técnica</label><input id="ftUnhasTecnica" type="text" placeholder="Ex.: tradicional, gel, alongamento...">
-            <label>Observações</label><textarea id="ftUnhasObs" rows="2"></textarea>
-          </fieldset>
-        </div>
-        <div class="technical-grid">
-          <div class="full"><label>Recomendações para o próximo atendimento</label><textarea id="ftRecomendacoes" rows="3" placeholder="Orientações para continuidade do atendimento."></textarea></div>
-        </div>
-        <div class="technical-actions"><button type="submit" class="btn-primary">Salvar ficha técnica</button></div>
-      </form>
-    </section>
   </div>
 </div>
 <script src="js/clientes.js"></script></body></html>

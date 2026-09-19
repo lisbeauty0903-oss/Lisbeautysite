@@ -1,0 +1,20 @@
+LiS Beauty V1.9.3 — Ficha da Cliente em Abas
+
+Não há SQL novo.
+
+Melhorias:
+- Modal reorganizado em quatro abas:
+  Resumo | Histórico | Anotações | Ficha Técnica
+- Cabeçalho da cliente e botão fechar permanecem visíveis.
+- A rolagem acontece somente no conteúdo da aba.
+- Ficha Técnica reorganizada em:
+  Geral | Cabelo | Unhas
+- Botão Salvar ficha técnica permanece acessível na parte inferior.
+- Todos os campos e IDs da V1.9.2 foram preservados.
+- Dados já cadastrados no Supabase não são alterados.
+
+Publicação:
+1. Substitua os arquivos no GitHub.
+2. Commit to main.
+3. Push origin.
+4. Ctrl + F5.
