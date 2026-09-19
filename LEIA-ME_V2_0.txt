@@ -1,0 +1,24 @@
+LiS Beauty V2.0 — Agenda Inteligente
+
+Não há SQL novo nesta versão.
+
+Principais melhorias:
+- Agenda com visual operacional mais profissional.
+- Indicadores do período: atendimentos, confirmados, em atendimento e concluídos.
+- Filtro por status.
+- Filtro por profissional mantido.
+- Campo para ir diretamente a qualquer data.
+- Dia atual destacado visualmente.
+- Legenda de status.
+- Cores laterais nos cards conforme o status.
+- Valor do atendimento visível no card.
+- Navegação Dia/Semana mantida.
+- Ações rápidas Confirmar, Iniciar, Concluir e Cancelar preservadas.
+- Bloqueios e regras de disponibilidade preservados.
+- Toda a lógica de conflito do Supabase continua ativa.
+
+Publicação:
+1. Substitua os arquivos no GitHub.
+2. Commit to main.
+3. Push origin.
+4. Ctrl + F5.

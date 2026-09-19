@@ -469,3 +469,29 @@ th { color: var(--gold); font-weight: 600; }
  .ficha-sticky-header{padding:16px}.ficha-tabs{padding:8px 16px}.ficha-tab-body{padding:16px}
  .ficha-kpis{grid-template-columns:1fr 1fr}.ficha-tabs{gap:3px}.ficha-tab{padding:8px 10px}
 }
+
+/* V2.0 — Agenda Inteligente */
+.agenda-toolbar-v20{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.agenda-toolbar-v20 .agenda-filtros{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.agenda-toolbar-v20 input[type=date],.agenda-toolbar-v20 select{min-height:40px}
+.agenda-kpis-v20{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0}
+.agenda-kpis-v20 article{background:#211d1a;border:1px solid var(--border);border-radius:15px;padding:16px 18px}
+.agenda-kpis-v20 span,.agenda-kpis-v20 strong,.agenda-kpis-v20 small{display:block}
+.agenda-kpis-v20 span{color:var(--muted);font-size:13px}.agenda-kpis-v20 strong{color:var(--gold);font-size:28px;margin:4px 0}.agenda-kpis-v20 small{color:var(--muted)}
+.agenda-status-legend{display:flex;gap:18px;align-items:center;flex-wrap:wrap;padding:12px 16px;margin-bottom:14px}
+.agenda-status-legend span{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.status-agendado-dot{background:#c69c5b}.status-confirmado-dot{background:#5f8fc7}.status-em_atendimento-dot{background:#d47b42}.status-concluido-dot{background:#62956c}.status-cancelado-dot{background:#9b6262}.bloqueio-dot{background:#777}
+.agenda-calendar-v20{overflow-x:auto}
+.agenda-calendar-v20 .calendar-day{min-height:430px;transition:border-color .2s,background .2s}
+.agenda-calendar-v20 .calendar-day.is-today{background:rgba(198,156,91,.055);box-shadow:inset 0 3px 0 #c69c5b}
+.agenda-calendar-v20 .calendar-day.is-today .calendar-day-head strong{color:var(--gold)}
+.agenda-calendar-v20 .agenda-item{border-left-width:4px;box-shadow:0 5px 14px rgba(0,0,0,.12)}
+.agenda-calendar-v20 .agenda-item:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.2)}
+.agenda-card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px}
+.agenda-card-value{font-size:11px;color:var(--gold);font-weight:700}
+.status-agendado{border-left-color:#c69c5b!important}.status-confirmado{border-left-color:#5f8fc7!important}.status-em_atendimento{border-left-color:#d47b42!important}.status-concluido{border-left-color:#62956c!important}.status-cancelado{border-left-color:#9b6262!important;opacity:.72}.status-nao_compareceu{border-left-color:#9b6262!important}
+.agenda-calendar-v20 .agenda-quick-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.agenda-calendar-v20 .agenda-quick-actions button{min-height:30px}
+@media(max-width:1050px){.agenda-kpis-v20{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.agenda-kpis-v20{grid-template-columns:1fr 1fr}.agenda-toolbar-v20{align-items:stretch}.agenda-toolbar-v20 .agenda-filtros{width:100%}.agenda-toolbar-v20 .agenda-filtros>*{flex:1 1 140px}}
