@@ -495,3 +495,20 @@ th { color: var(--gold); font-weight: 600; }
 .agenda-calendar-v20 .agenda-quick-actions button{min-height:30px}
 @media(max-width:1050px){.agenda-kpis-v20{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.agenda-kpis-v20{grid-template-columns:1fr 1fr}.agenda-toolbar-v20{align-items:stretch}.agenda-toolbar-v20 .agenda-filtros{width:100%}.agenda-toolbar-v20 .agenda-filtros>*{flex:1 1 140px}}
+
+/* V2.0.1 — Agenda diária por horário e profissional */
+.day-schedule-wrap{min-width:820px;overflow:hidden;border-radius:12px}
+.day-schedule-head{display:grid;grid-template-columns:76px repeat(var(--pro-count,1),minmax(210px,1fr));position:sticky;top:0;z-index:8;background:#211d1a;border-bottom:1px solid var(--border)}
+.day-time-corner,.day-pro-head{padding:13px 10px;font-weight:700;color:var(--gold);border-right:1px solid var(--border)}
+.day-schedule-body{display:grid;grid-template-columns:76px repeat(var(--pro-count,1),minmax(210px,1fr));position:relative}
+.day-time-col{background:#191613;border-right:1px solid var(--border)}
+.day-time-label{box-sizing:border-box;padding:6px 9px;border-bottom:1px solid rgba(255,255,255,.06);font-size:11px;color:var(--muted)}
+.day-pro-col{position:relative;border-right:1px solid var(--border);min-height:880px}
+.day-free-slot{display:block;width:100%;border:0;border-bottom:1px solid rgba(255,255,255,.055);background:transparent;cursor:pointer}
+.day-free-slot:hover{background:rgba(198,156,91,.07)}
+.day-event{position:absolute;left:5px;right:5px;z-index:3;box-sizing:border-box;border-radius:9px;padding:7px 9px;background:#302923;border-left:4px solid #c69c5b;overflow:hidden;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.22)}
+.day-event strong,.day-event b,.day-event small{display:block}.day-event strong{font-size:11px;color:var(--gold)}.day-event b{font-size:12px;margin:2px 0}.day-event small{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day-event.status-confirmado{border-left-color:#5f8fc7}.day-event.status-em_atendimento{border-left-color:#d47b42}.day-event.status-concluido{border-left-color:#62956c}.day-event.status-cancelado,.day-event.status-nao_compareceu{border-left-color:#9b6262}
+.day-block{background:repeating-linear-gradient(135deg,#272727,#272727 7px,#303030 7px,#303030 14px);border-left-color:#777;cursor:default}
+.day-block strong{color:#bbb}
+@media(max-width:900px){.day-schedule-wrap{min-width:720px}}

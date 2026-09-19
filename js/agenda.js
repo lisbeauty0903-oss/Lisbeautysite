@@ -33,7 +33,75 @@ async function serviceMap(){
  let {data,error}=await supabaseClient.from("agendamento_servicos").select("agendamento_id,servico_id").in("agendamento_id",ids);if(error)throw error;
  let m={};(data||[]).forEach(x=>(m[x.agendamento_id]??=[]).push(x.servico_id));return m;
 }
-async function render(){
+async function renderDiaProfissional(){
+ const [ini,fim]=range(), pf=$("filtroProfissional").value, sf=$("filtroStatus")?.value||"";
+ const dia=ds(ref);
+ const profs=P.filter(p=>!pf||p.id===pf);
+ const ag=A.filter(x=>ds(new Date(x.inicio))===dia&&(!pf||x.profissional_id===pf)&&(!sf||x.status===sf));
+ const bloq=B.filter(x=>ds(new Date(x.inicio))===dia&&(!pf||x.profissional_id===pf));
+ const visible=ag;
+ $("agendaKpiTotal").textContent=visible.filter(x=>x.status!=="cancelado").length;
+ $("agendaKpiConfirmados").textContent=visible.filter(x=>x.status==="confirmado").length;
+ $("agendaKpiAndamento").textContent=visible.filter(x=>x.status==="em_atendimento").length;
+ $("agendaKpiConcluidos").textContent=visible.filter(x=>x.status==="concluido").length;
+
+ const minStart=8*60, maxEnd=18*60, step=30, slotH=44;
+ const times=[]; for(let m=minStart;m<maxEnd;m+=step)times.push(m);
+ const fmt=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+ const mins=d=>d.getHours()*60+d.getMinutes();
+ const pName=id=>P.find(p=>p.id===id)?.nome||"Profissional";
+ const cName=id=>C.find(c=>c.id===id)?.nome||"Cliente";
+ const servicesFor=id=>(AS.filter(l=>l.agendamento_id===id).map(l=>S.find(s=>s.id===l.servico_id)?.nome).filter(Boolean).join(", ")||"—");
+
+ if(!profs.length){$("agendaGrid").innerHTML='<div class="empty-state">Nenhum profissional disponível.</div>';return}
+
+ let cols=profs.map(p=>`<div class="day-pro-head">${esc(p.nome)}</div>`).join("");
+ let timeLabels=times.map(m=>`<div class="day-time-label" style="height:${slotH}px">${fmt(m)}</div>`).join("");
+ let grids=profs.map(p=>{
+   const items=[];
+   ag.filter(a=>a.profissional_id===p.id).forEach(a=>{
+     const st=new Date(a.inicio), en=new Date(a.fim);
+     const sm=Math.max(minStart,mins(st)), em=Math.min(maxEnd,mins(en));
+     const top=((sm-minStart)/step)*slotH, height=Math.max(38,((em-sm)/step)*slotH-4);
+     items.push(`<article class="day-event status-${a.status}" style="top:${top}px;height:${height}px" onclick="openA('${a.id}')">
+       <strong>${st.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}–${en.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}</strong>
+       <b>${esc(cName(a.cliente_id))}</b><small>${esc(servicesFor(a.id))}</small>
+     </article>`);
+   });
+   bloq.filter(b=>b.profissional_id===p.id).forEach(b=>{
+     const st=new Date(b.inicio), en=new Date(b.fim);
+     const sm=Math.max(minStart,mins(st)), em=Math.min(maxEnd,mins(en));
+     const top=((sm-minStart)/step)*slotH, height=Math.max(34,((em-sm)/step)*slotH-4);
+     items.push(`<article class="day-event day-block" style="top:${top}px;height:${height}px"><strong>Bloqueado</strong><small>${esc(b.motivo||"Indisponível")}</small></article>`);
+   });
+   const slots=times.map(m=>`<button type="button" class="day-free-slot" style="height:${slotH}px" data-prof="${p.id}" data-min="${m}" title="Novo agendamento às ${fmt(m)}"></button>`).join("");
+   return `<div class="day-pro-col" data-prof="${p.id}">${slots}${items.join("")}</div>`;
+ }).join("");
+
+ $("periodoAgenda").textContent=ref.toLocaleDateString("pt-BR",{weekday:"long",day:"2-digit",month:"long",year:"numeric"});
+ $("agendaGrid").style.setProperty("--pro-count",profs.length);
+ $("agendaGrid").innerHTML=`<div class="day-schedule-wrap">
+   <div class="day-schedule-head"><div class="day-time-corner">Horário</div>${cols}</div>
+   <div class="day-schedule-body"><div class="day-time-col">${timeLabels}</div>${grids}</div>
+ </div>`;
+
+ document.querySelectorAll(".day-free-slot").forEach(btn=>btn.addEventListener("click",e=>{
+   if(e.target.closest(".day-event"))return;
+   const pid=btn.dataset.prof, m=Number(btn.dataset.min);
+   openA();
+   $("aProf").value=pid;
+   $("aData").value=dia;
+   $("aProf").dispatchEvent(new Event("change"));
+   setTimeout(()=>{
+     $("aData").dispatchEvent(new Event("change"));
+     setTimeout(()=>{
+       const wanted=fmt(m), opt=[...$("aHora").options].find(o=>o.value===wanted);
+       if(opt)$("aHora").value=wanted;
+     },100);
+   },50);
+ }));
+}
+function render(){
  let [i,f]=range(),pf=$("filtroProfissional").value,sf=$("filtroStatus")?.value||"",m=await serviceMap(),days=[];
  let visible=A.filter(x=>(!pf||x.profissional_id===pf)&&(!sf||x.status===sf));
  $("agendaKpiTotal").textContent=visible.filter(x=>x.status!=="cancelado").length;

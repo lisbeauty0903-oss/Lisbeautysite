@@ -1,0 +1,21 @@
+LiS Beauty V2.0.1 — Agenda diária por horário e profissional
+
+Não há SQL novo.
+
+Incluído:
+- Visão Dia em grade de horários de 30 minutos.
+- Profissionais em colunas.
+- Atendimentos ocupam visualmente o intervalo correspondente.
+- Bloqueios aparecem diretamente na grade.
+- Cores por status preservadas.
+- Clique no atendimento abre a edição.
+- Clique em horário livre abre Novo agendamento já com profissional, data e tentativa de horário preenchidos.
+- Visão Semana da V2.0 preservada.
+- Filtros, indicadores, ações rápidas e regras de conflito continuam ativos.
+
+Publicação:
+1. Substitua os arquivos no GitHub.
+2. Commit to main.
+3. Push origin.
+4. Ctrl + F5.
+5. Em Agenda, clique em Dia para testar a nova grade.
