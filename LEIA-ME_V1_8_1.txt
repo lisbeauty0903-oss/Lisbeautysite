@@ -1,0 +1,13 @@
+LiS Beauty V1.8.1 — Correção do Financeiro
+
+Correções:
+- Datas De/Até são preenchidas automaticamente com o mês atual.
+- Botão Aplicar filtros agora possui evento explícito e feedback "Carregando...".
+- Validação de datas.
+- Carregamento inicial do Financeiro foi tornado mais robusto.
+- O botão Registrar repasse aparecerá quando existir comissão pendente.
+
+IMPORTANTE:
+- Esta versão mantém a tabela repasses_profissionais da V1.8.
+- Se SUPABASE_V1_8_REPASSES.sql já foi executado com sucesso, NÃO execute novamente.
+- Basta substituir os arquivos do site e publicar.

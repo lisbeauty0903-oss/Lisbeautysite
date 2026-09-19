@@ -1,7 +1,12 @@
 const $=id=>document.getElementById(id),money=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"}),safe=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
 const labels={agendado:"Agendado",confirmado:"Confirmado",em_atendimento:"Em atendimento",concluido:"Concluído",cancelado:"Cancelado",nao_compareceu:"Não compareceu"};
 const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-function defaults(a,b){let e=new Date(),s=new Date(e);s.setDate(1);$(a).value=ymd(s);$(b).value=ymd(e)}
+function defaults(a,b){
+ const fim=new Date(), inicio=new Date(fim.getFullYear(),fim.getMonth(),1);
+ const elA=$(a),elB=$(b);
+ if(elA&&!elA.value)elA.value=ymd(inicio);
+ if(elB&&!elB.value)elB.value=ymd(fim);
+}
 function csv(name,rows){let text=rows.map(r=>r.map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(";")).join("\r\n"),blob=new Blob(["\ufeff"+text],{type:"text/csv;charset=utf-8;"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
 let rows=[],clients=[],pros=[],repasses=[];
 const baseCom=x=>x.status==="concluido"?Math.max(0,Number(x.valor_total||0)-Number(x.desconto||0)):0;
@@ -9,7 +14,10 @@ const pct=id=>Number(pros.find(x=>x.id===id)?.percentual_comissao||0);
 const com=x=>baseCom(x)*(pct(x.profissional_id)/100);
 const paidFor=id=>repasses.filter(r=>r.profissional_id===id).reduce((t,r)=>t+Number(r.valor||0),0);
 async function load(){
+ defaults("finInicio","finFim");
  let i=$("finInicio").value,f=$("finFim").value,p=$("finProf").value,st=$("finStatus").value;
+ if(!i||!f) throw new Error("Informe as datas inicial e final.");
+ if(i>f) throw new Error("A data inicial não pode ser maior que a data final.");
  let q=supabaseClient.from("agendamentos").select("*").gte("inicio",new Date(i+"T00:00:00").toISOString()).lte("inicio",new Date(f+"T23:59:59").toISOString()).order("inicio");
  if(p)q=q.eq("profissional_id",p);if(st)q=q.eq("status",st);
  let rq=supabaseClient.from("repasses_profissionais").select("*").gte("data_pagamento",i).lte("data_pagamento",f).order("data_pagamento",{ascending:false}).order("criado_em",{ascending:false});
@@ -33,4 +41,25 @@ window.openRepasse=(id,saldo)=>{$("repasseProfId").value=id;$("repasseProfNome")
 function closeRepasse(){$("repasseModal").classList.add("hidden")}
 window.deleteRepasse=async id=>{if(!confirm("Excluir este registro de repasse?"))return;let {error}=await supabaseClient.from("repasses_profissionais").delete().eq("id",id);if(error)return alert(error.message);await load()};
 async function saveRepasse(e){e.preventDefault();let {data:{user}}=await supabaseClient.auth.getUser();let payload={profissional_id:$("repasseProfId").value,data_pagamento:$("repasseData").value,valor:Number($("repasseValor").value),forma_pagamento:$("repasseForma").value||null,observacoes:$("repasseObs").value.trim()||null,criado_por:user?.id||null};if(!payload.valor||payload.valor<=0)return alert("Informe um valor válido.");let {error}=await supabaseClient.from("repasses_profissionais").insert(payload);if(error)return alert(error.message);closeRepasse();await load()}
-document.addEventListener("DOMContentLoaded",async()=>{try{defaults("finInicio","finFim");await load();$("finAplicar").onclick=load;$("fecharRepasse").onclick=closeRepasse;$("cancelarRepasse").onclick=closeRepasse;$("repasseForm").onsubmit=saveRepasse;$("exportFinanceiro").onclick=()=>csv("lis-beauty-financeiro.csv",[["Data","Cliente","Profissional","Status","Previsto","Recebido","Comissão","Líquido Studio","Pagamento"],...rows.map(x=>[new Date(x.inicio).toLocaleString("pt-BR"),clients.find(c=>c.id===x.cliente_id)?.nome||"",pros.find(p=>p.id===x.profissional_id)?.nome||"",labels[x.status]||x.status,Math.max(0,Number(x.valor_total||0)-Number(x.desconto||0)).toFixed(2),Number(x.valor_pago||0).toFixed(2),x.status==="concluido"?com(x).toFixed(2):"0.00",x.status==="concluido"?(baseCom(x)-com(x)).toFixed(2):"0.00",x.forma_pagamento||""]])}catch(e){console.error(e);alert("Erro ao carregar Financeiro: "+(e.message||""))}});
+async function aplicarFinanceiro(){
+ const btn=$("finAplicar");
+ try{
+  if(btn){btn.disabled=true;btn.textContent="Carregando..."}
+  await load();
+ }catch(e){
+  console.error("Financeiro:",e);
+  alert("Não foi possível carregar o Financeiro: "+(e.message||e));
+ }finally{
+  if(btn){btn.disabled=false;btn.textContent="Aplicar"}
+ }
+}
+document.addEventListener("DOMContentLoaded",()=>{
+ defaults("finInicio","finFim");
+ const aplicar=$("finAplicar"),fechar=$("fecharRepasse"),cancelar=$("cancelarRepasse"),form=$("repasseForm"),exp=$("exportFinanceiro");
+ if(aplicar) aplicar.addEventListener("click",aplicarFinanceiro);
+ if(fechar) fechar.addEventListener("click",closeRepasse);
+ if(cancelar) cancelar.addEventListener("click",closeRepasse);
+ if(form) form.addEventListener("submit",saveRepasse);
+ if(exp) exp.addEventListener("click",()=>csv("lis-beauty-financeiro.csv",[["Data","Cliente","Profissional","Status","Previsto","Recebido","Comissão","Líquido Studio","Pagamento"],...rows.map(x=>[new Date(x.inicio).toLocaleString("pt-BR"),clients.find(c=>c.id===x.cliente_id)?.nome||"",pros.find(p=>p.id===x.profissional_id)?.nome||"",labels[x.status]||x.status,Math.max(0,Number(x.valor_total||0)-Number(x.desconto||0)).toFixed(2),Number(x.valor_pago||0).toFixed(2),x.status==="concluido"?com(x).toFixed(2):"0.00",x.status==="concluido"?(baseCom(x)-com(x)).toFixed(2):"0.00",x.forma_pagamento||""]]));
+ setTimeout(aplicarFinanceiro,150);
+});
