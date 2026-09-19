@@ -28,6 +28,32 @@
         <div id="listaAnotacoes" class="notes-list"></div>
       </section>
     </div>
+    <section class="panel ficha-tecnica-section">
+      <div class="panel-header"><div><h3>Ficha Técnica de Beleza</h3><p class="muted">Informações profissionais para personalizar os próximos atendimentos</p></div><span id="fichaTecnicaStatus" class="muted"></span></div>
+      <form id="fichaTecnicaForm">
+        <div class="technical-grid">
+          <div class="full"><label>Preferências da cliente</label><textarea id="ftPreferencias" rows="2" placeholder="Ex.: estilo, acabamento, cores preferidas, hábitos..."></textarea></div>
+          <div class="full"><label>Alergias ou sensibilidades</label><textarea id="ftAlergias" rows="2" placeholder="Registre somente informações relevantes ao atendimento de beleza."></textarea></div>
+          <div class="full"><label>Produtos utilizados / preferidos</label><textarea id="ftProdutos" rows="2" placeholder="Produtos, marcas ou linhas utilizadas no atendimento."></textarea></div>
+        </div>
+        <div class="tech-columns">
+          <fieldset class="tech-fieldset"><legend>Cabelo</legend>
+            <label>Químicas / histórico químico</label><textarea id="ftCabeloQuimicas" rows="2"></textarea>
+            <label>Cor / tonalidade</label><input id="ftCabeloCor" type="text" placeholder="Ex.: castanho, 6.7, mechas...">
+            <label>Procedimentos anteriores</label><textarea id="ftCabeloProcedimentos" rows="2"></textarea>
+          </fieldset>
+          <fieldset class="tech-fieldset"><legend>Unhas</legend>
+            <label>Formato preferido</label><input id="ftUnhasFormato" type="text" placeholder="Ex.: quadrada, oval, almond...">
+            <label>Técnica</label><input id="ftUnhasTecnica" type="text" placeholder="Ex.: tradicional, gel, alongamento...">
+            <label>Observações</label><textarea id="ftUnhasObs" rows="2"></textarea>
+          </fieldset>
+        </div>
+        <div class="technical-grid">
+          <div class="full"><label>Recomendações para o próximo atendimento</label><textarea id="ftRecomendacoes" rows="3" placeholder="Orientações para continuidade do atendimento."></textarea></div>
+        </div>
+        <div class="technical-actions"><button type="submit" class="btn-primary">Salvar ficha técnica</button></div>
+      </form>
+    </section>
   </div>
 </div>
 <script src="js/clientes.js"></script></body></html>

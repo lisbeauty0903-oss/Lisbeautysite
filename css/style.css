@@ -440,3 +440,10 @@ th { color: var(--gold); font-weight: 600; }
 .note-form textarea{width:100%;margin-bottom:10px}.notes-list{margin-top:16px}.client-note{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}.client-note p{margin:0 0 5px;white-space:pre-wrap}.client-note small{color:var(--muted)}
 .btn-ficha{margin-right:6px}
 @media(max-width:900px){.ficha-kpis{grid-template-columns:repeat(2,1fr)}.ficha-grid{grid-template-columns:1fr}}
+
+/* V1.9.2 Ficha Técnica de Beleza */
+.ficha-tecnica-section{margin-top:16px}.technical-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.technical-grid .full{grid-column:1/-1}
+.tech-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}.tech-fieldset{border:1px solid var(--border);border-radius:14px;padding:16px}.tech-fieldset legend{padding:0 8px;color:var(--gold);font-weight:700}
+.tech-fieldset label,.technical-grid label{display:block;margin:10px 0 6px}.tech-fieldset input,.tech-fieldset textarea,.technical-grid textarea{width:100%}
+.technical-actions{display:flex;justify-content:flex-end;margin-top:14px}
+@media(max-width:800px){.tech-columns,.technical-grid{grid-template-columns:1fr}.technical-grid .full{grid-column:auto}}

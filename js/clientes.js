@@ -74,3 +74,51 @@ document.addEventListener("DOMContentLoaded",()=>{
  });
  const root=document.querySelector("main");if(root)obs.observe(root,{childList:true,subtree:true});
 });
+
+
+// ===== V1.9.2 - Ficha Técnica de Beleza =====
+async function carregarFichaTecnica(clienteId){
+ const {data,error}=await supabaseClient.from("cliente_ficha_tecnica").select("*").eq("cliente_id",clienteId).maybeSingle();
+ if(error){console.error(error);return}
+ const v=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val||""};
+ v("ftPreferencias",data?.preferencias);v("ftAlergias",data?.alergias_sensibilidades);v("ftProdutos",data?.produtos_utilizados);
+ v("ftCabeloQuimicas",data?.cabelo_quimicas);v("ftCabeloCor",data?.cabelo_cor_tonalidade);v("ftCabeloProcedimentos",data?.cabelo_procedimentos);
+ v("ftUnhasFormato",data?.unhas_formato);v("ftUnhasTecnica",data?.unhas_tecnica);v("ftUnhasObs",data?.unhas_observacoes);v("ftRecomendacoes",data?.recomendacoes_proximo_atendimento);
+ const st=document.getElementById("fichaTecnicaStatus");
+ if(st)st.textContent=data?.atualizado_em?"Atualizada em "+new Date(data.atualizado_em).toLocaleString("pt-BR"):"Ainda não preenchida";
+}
+const _abrirFichaClienteV19=abrirFichaCliente;
+abrirFichaCliente=async function(id){
+ await _abrirFichaClienteV19(id);
+ await carregarFichaTecnica(id);
+};
+window.abrirFichaCliente=abrirFichaCliente;
+
+document.addEventListener("DOMContentLoaded",()=>{
+ document.getElementById("fichaTecnicaForm")?.addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!fichaClienteId)return;
+  const g=id=>document.getElementById(id)?.value.trim()||null;
+  const {data:{user}}=await supabaseClient.auth.getUser();
+  const payload={
+   cliente_id:fichaClienteId,
+   preferencias:g("ftPreferencias"),
+   alergias_sensibilidades:g("ftAlergias"),
+   produtos_utilizados:g("ftProdutos"),
+   cabelo_quimicas:g("ftCabeloQuimicas"),
+   cabelo_cor_tonalidade:g("ftCabeloCor"),
+   cabelo_procedimentos:g("ftCabeloProcedimentos"),
+   unhas_formato:g("ftUnhasFormato"),
+   unhas_tecnica:g("ftUnhasTecnica"),
+   unhas_observacoes:g("ftUnhasObs"),
+   recomendacoes_proximo_atendimento:g("ftRecomendacoes"),
+   atualizado_por:user?.id||null
+  };
+  const btn=e.submitter; if(btn){btn.disabled=true;btn.textContent="Salvando..."}
+  const {error}=await supabaseClient.from("cliente_ficha_tecnica").upsert(payload,{onConflict:"cliente_id"});
+  if(btn){btn.disabled=false;btn.textContent="Salvar ficha técnica"}
+  if(error)return alert("Erro ao salvar ficha técnica: "+error.message);
+  await carregarFichaTecnica(fichaClienteId);
+  alert("Ficha técnica salva.");
+ });
+});
