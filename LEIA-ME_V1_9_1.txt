@@ -1,0 +1,15 @@
+LiS Beauty V1.9.1 — Correção do botão Ficha
+
+Correção:
+- O botão Ficha agora é renderizado diretamente na coluna Ações da tabela Clientes.
+- Ordem: Ficha | Editar | Excluir.
+- Mantida toda a funcionalidade da V1.9.
+
+Não há SQL novo.
+Se o SQL SUPABASE_V1_9_FICHA_CLIENTE.sql já foi executado, não execute novamente.
+
+Publicação:
+1. Substitua os arquivos no GitHub.
+2. Commit to main.
+3. Push origin.
+4. Ctrl + F5.
