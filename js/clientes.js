@@ -6,3 +6,71 @@ async function carregarClientes(){const{data,error}=await supabaseClient.from("c
 window.editarCliente=id=>{const x=clientesCache.find(c=>c.id===id);if(!x)return;clienteId.value=x.id;clienteNome.value=x.nome||"";clienteTelefone.value=x.telefone||"";clienteEmail.value=x.email||"";clienteNascimento.value=x.data_nascimento||"";clienteObservacoes.value=x.observacoes||"";clienteFormTitle.textContent="Editar cliente";clienteFormPanel.scrollIntoView({behavior:"smooth"});}
 window.excluirCliente=async id=>{const x=clientesCache.find(c=>c.id===id);if(!x||!confirm(`Excluir ${x.nome} da lista de clientes?`))return;const{error}=await supabaseClient.from("clientes").update({ativo:false}).eq("id",id);if(error){alert("Não foi possível excluir o cliente.");console.error(error);return;}limparCliente();await carregarClientes();}
 document.addEventListener("DOMContentLoaded",async()=>{await carregarClientes();novoClienteBtn.onclick=()=>{limparCliente();clienteFormPanel.scrollIntoView({behavior:"smooth"});};cancelarClienteBtn.onclick=limparCliente;buscaCliente.oninput=e=>{const t=e.target.value.toLowerCase();renderClientes(clientesCache.filter(x=>[x.nome,x.telefone,x.email].some(v=>(v||"").toLowerCase().includes(t))));};clienteForm.onsubmit=async e=>{e.preventDefault();const id=clienteId.value,p={nome:clienteNome.value.trim(),telefone:clienteTelefone.value.trim(),email:clienteEmail.value.trim()||null,data_nascimento:clienteNascimento.value||null,observacoes:clienteObservacoes.value.trim()||null,ativo:true};const q=id?supabaseClient.from("clientes").update(p).eq("id",id):supabaseClient.from("clientes").insert(p);const{error}=await q;if(error){clienteMessage.textContent=error.message.includes("duplicate")?"Este telefone já está cadastrado.":"Erro ao salvar cliente.";clienteMessage.className="form-message error";return;}clienteMessage.textContent=id?"Cliente atualizado com sucesso.":"Cliente cadastrado com sucesso.";clienteMessage.className="form-message success";setTimeout(async()=>{limparCliente();await carregarClientes();},400);};});
+
+
+// ===== V1.9 - Ficha e Histórico da Cliente =====
+let fichaClienteId=null;
+const fichaMoney=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const fichaSafe=v=>String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+const fichaStatus={agendado:"Agendado",confirmado:"Confirmado",em_atendimento:"Em atendimento",concluido:"Concluído",cancelado:"Cancelado",nao_compareceu:"Não compareceu"};
+
+async function abrirFichaCliente(id){
+ fichaClienteId=id;
+ const modal=document.getElementById("fichaClienteModal");
+ if(!modal)return;
+ modal.classList.remove("hidden");
+ document.getElementById("fichaHistorico").innerHTML='<tr><td colspan="5">Carregando...</td></tr>';
+ const [cr,ar,pr,sr,nr]=await Promise.all([
+  supabaseClient.from("clientes").select("*").eq("id",id).single(),
+  supabaseClient.from("agendamentos").select("*").eq("cliente_id",id).order("inicio",{ascending:false}),
+  supabaseClient.from("profissionais").select("id,nome"),
+  supabaseClient.from("servicos").select("id,nome"),
+  supabaseClient.from("cliente_anotacoes").select("*").eq("cliente_id",id).order("criado_em",{ascending:false})
+ ]);
+ if(cr.error||ar.error||pr.error||sr.error||nr.error){alert("Não foi possível abrir a ficha: "+(cr.error||ar.error||pr.error||sr.error||nr.error).message);return}
+ const c=cr.data,a=ar.data||[],pros=pr.data||[],serv=sr.data||[];
+ document.getElementById("fichaNome").textContent=c.nome||"Cliente";
+ document.getElementById("fichaContato").textContent=[c.telefone,c.email].filter(Boolean).join(" • ")||"Sem contato informado";
+ const concl=a.filter(x=>x.status==="concluido");
+ document.getElementById("fichaVisitas").textContent=concl.length;
+ document.getElementById("fichaGasto").textContent=fichaMoney(concl.reduce((t,x)=>t+Number(x.valor_pago||0),0));
+ document.getElementById("fichaUltimo").textContent=concl.length?new Date(concl[0].inicio).toLocaleDateString("pt-BR"):"—";
+ let ids=a.map(x=>x.id),links=[];
+ if(ids.length){const lr=await supabaseClient.from("agendamento_servicos").select("agendamento_id,servico_id").in("agendamento_id",ids);if(!lr.error)links=lr.data||[]}
+ const counts={};links.filter(l=>concl.some(a=>a.id===l.agendamento_id)).forEach(l=>counts[l.servico_id]=(counts[l.servico_id]||0)+1);
+ const fav=Object.entries(counts).sort((x,y)=>y[1]-x[1])[0];
+ document.getElementById("fichaFavorito").textContent=fav?(serv.find(s=>s.id===fav[0])?.nome||"—"):"—";
+ const pn=id=>pros.find(p=>p.id===id)?.nome||"Profissional";
+ const serviceNames=agid=>links.filter(l=>l.agendamento_id===agid).map(l=>serv.find(s=>s.id===l.servico_id)?.nome).filter(Boolean).join(", ")||"—";
+ document.getElementById("fichaHistorico").innerHTML=a.length?a.map(x=>`<tr><td>${new Date(x.inicio).toLocaleString("pt-BR")}</td><td>${fichaSafe(serviceNames(x.id))}</td><td>${fichaSafe(pn(x.profissional_id))}</td><td>${fichaStatus[x.status]||x.status}</td><td>${fichaMoney(x.valor_pago||0)}</td></tr>`).join(""):'<tr><td colspan="5">Nenhum atendimento registrado.</td></tr>';
+ renderAnotacoes(nr.data||[]);
+}
+function renderAnotacoes(rows){
+ const el=document.getElementById("listaAnotacoes");
+ el.innerHTML=rows.length?rows.map(n=>`<article class="client-note"><div><p>${fichaSafe(n.anotacao)}</p><small>${new Date(n.criado_em).toLocaleString("pt-BR")}</small></div><button type="button" class="btn-mini danger-lite" onclick="excluirAnotacao('${n.id}')">Excluir</button></article>`).join(""):'<div class="empty-state">Nenhuma anotação cadastrada.</div>';
+}
+window.excluirAnotacao=async id=>{if(!confirm("Excluir esta anotação?"))return;const {error}=await supabaseClient.from("cliente_anotacoes").delete().eq("id",id);if(error)return alert(error.message);abrirFichaCliente(fichaClienteId)};
+window.abrirFichaCliente=abrirFichaCliente;
+
+document.addEventListener("DOMContentLoaded",()=>{
+ const close=()=>document.getElementById("fichaClienteModal")?.classList.add("hidden");
+ document.getElementById("fecharFicha")?.addEventListener("click",close);
+ document.getElementById("anotacaoForm")?.addEventListener("submit",async e=>{
+  e.preventDefault();const text=document.getElementById("novaAnotacao").value.trim();if(!text||!fichaClienteId)return;
+  const {data:{user}}=await supabaseClient.auth.getUser();
+  const {error}=await supabaseClient.from("cliente_anotacoes").insert({cliente_id:fichaClienteId,anotacao:text,criado_por:user?.id||null});
+  if(error)return alert(error.message);
+  document.getElementById("novaAnotacao").value="";
+  abrirFichaCliente(fichaClienteId);
+ });
+ // Adiciona botão Ficha aos cards/linhas de cliente sempre que forem renderizados.
+ const obs=new MutationObserver(()=>{
+  document.querySelectorAll('[data-id]').forEach(el=>{
+   const id=el.getAttribute("data-id");
+   if(!id||el.querySelector(".btn-ficha"))return;
+   const area=el.querySelector(".actions,.card-actions,.cliente-actions");
+   if(area){const b=document.createElement("button");b.type="button";b.className="btn-secondary btn-ficha";b.textContent="Ficha";b.onclick=e=>{e.stopPropagation();abrirFichaCliente(id)};area.prepend(b)}
+  });
+ });
+ const root=document.querySelector("main");if(root)obs.observe(root,{childList:true,subtree:true});
+});

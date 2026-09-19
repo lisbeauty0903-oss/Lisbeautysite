@@ -4,4 +4,30 @@
 <main class="content"><header class="topbar"><div><h1>Clientes</h1><p class="muted">Cadastro, edição e exclusão de clientes</p></div><button id="novoClienteBtn" class="btn-primary top-action">+ Novo cliente</button></header>
 <section class="panel" id="clienteFormPanel"><div class="panel-header"><h2 id="clienteFormTitle">Novo cliente</h2></div><form id="clienteForm" class="form-grid"><input type="hidden" id="clienteId"><input id="clienteNome" placeholder="Nome completo" required><input id="clienteTelefone" placeholder="Telefone" required><input id="clienteEmail" type="email" placeholder="E-mail"><input id="clienteNascimento" type="date"><textarea id="clienteObservacoes" placeholder="Observações"></textarea><div class="form-actions"><button type="submit" class="btn-primary">Salvar cliente</button><button type="button" class="btn-secondary" id="cancelarClienteBtn">Cancelar</button></div></form><p id="clienteMessage" class="form-message"></p></section>
 <section class="panel"><div class="panel-header"><h2>Clientes cadastrados</h2><input id="buscaCliente" class="search-input" placeholder="Buscar cliente..."></div><div id="clientesLista" class="table-wrap"></div></section></main></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/config.js"></script><script src="js/auth.js"></script><script src="js/clientes.js"></script></body></html>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/config.js"></script><script src="js/auth.js"></script>
+<div id="fichaClienteModal" class="modal-overlay hidden">
+  <div class="modal-card ficha-cliente-card">
+    <div class="modal-header">
+      <div><h2 id="fichaNome">Ficha da cliente</h2><p id="fichaContato" class="muted"></p></div>
+      <button id="fecharFicha" class="icon-btn" type="button">×</button>
+    </div>
+    <section class="ficha-kpis">
+      <article><span>Total de visitas</span><strong id="fichaVisitas">0</strong></article>
+      <article><span>Total gasto</span><strong id="fichaGasto">R$ 0,00</strong></article>
+      <article><span>Último atendimento</span><strong id="fichaUltimo">—</strong></article>
+      <article><span>Serviço mais realizado</span><strong id="fichaFavorito">—</strong></article>
+    </section>
+    <div class="ficha-grid">
+      <section class="panel ficha-section">
+        <div class="panel-header"><div><h3>Histórico de atendimentos</h3><p class="muted">Serviços, profissional, status e valores</p></div></div>
+        <div class="table-scroll"><table class="report-table"><thead><tr><th>Data</th><th>Serviço</th><th>Profissional</th><th>Status</th><th>Valor</th></tr></thead><tbody id="fichaHistorico"></tbody></table></div>
+      </section>
+      <section class="panel ficha-section">
+        <div class="panel-header"><div><h3>Anotações da cliente</h3><p class="muted">Informações úteis para próximos atendimentos</p></div></div>
+        <form id="anotacaoForm" class="note-form"><textarea id="novaAnotacao" rows="3" placeholder="Ex.: preferência, observação para o próximo atendimento..." required></textarea><button class="btn-primary" type="submit">Adicionar anotação</button></form>
+        <div id="listaAnotacoes" class="notes-list"></div>
+      </section>
+    </div>
+  </div>
+</div>
+<script src="js/clientes.js"></script></body></html>

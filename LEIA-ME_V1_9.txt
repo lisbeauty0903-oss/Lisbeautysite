@@ -1,0 +1,21 @@
+LiS Beauty V1.9 — Ficha e Histórico da Cliente
+
+ATENÇÃO: há SQL novo.
+
+1. Execute SUPABASE_V1_9_FICHA_CLIENTE.sql UMA VEZ no Supabase SQL Editor.
+2. Publique os arquivos no GitHub.
+3. Ctrl+F5.
+
+Incluído:
+- Ficha individual da cliente.
+- Total de visitas (atendimentos concluídos).
+- Total gasto (valor efetivamente pago).
+- Data do último atendimento.
+- Serviço mais realizado.
+- Histórico completo de atendimentos.
+- Serviços realizados em cada atendimento.
+- Profissional, status e valor.
+- Anotações permanentes para próximos atendimentos.
+- Inclusão e exclusão de anotações.
+
+A nova tabela cliente_anotacoes mantém as observações separadas do cadastro básico da cliente.

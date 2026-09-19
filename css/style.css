@@ -430,3 +430,13 @@ th { color: var(--gold); font-weight: 600; }
 .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}.btn-mini{padding:7px 10px;border-radius:8px;border:1px solid #6d5738;background:#2b251d;color:#d7ad67;cursor:pointer}.danger-lite{border-color:#714545;color:#e6a2a2}
 @media(min-width:1200px){body:has(#finComissoesPagas) .dashboard-kpis{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:700px){.form-grid{grid-template-columns:1fr}}
+
+/* V1.9 Ficha da cliente */
+.ficha-cliente-card{width:min(1180px,96vw);max-height:92vh;overflow:auto}
+.ficha-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.ficha-kpis article{background:#191613;border:1px solid #3a332c;border-radius:14px;padding:15px}
+.ficha-kpis span,.ficha-kpis strong{display:block}.ficha-kpis span{font-size:12px;color:var(--muted);margin-bottom:7px}.ficha-kpis strong{color:var(--gold);font-size:18px}
+.ficha-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}.ficha-section{margin:0}.ficha-section h3{margin:0 0 4px}
+.note-form textarea{width:100%;margin-bottom:10px}.notes-list{margin-top:16px}.client-note{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}.client-note p{margin:0 0 5px;white-space:pre-wrap}.client-note small{color:var(--muted)}
+.btn-ficha{margin-right:6px}
+@media(max-width:900px){.ficha-kpis{grid-template-columns:repeat(2,1fr)}.ficha-grid{grid-template-columns:1fr}}
