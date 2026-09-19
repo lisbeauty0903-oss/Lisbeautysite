@@ -1,0 +1,1 @@
+1. Execute SUPABASE_V1_4_AGENDA.sql no Supabase.\n2. Substitua os arquivos no repositório.\n3. Commit e Push para main.\n4. Cadastre profissional, serviços e horários antes de testar a agenda.\n

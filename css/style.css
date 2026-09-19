@@ -374,3 +374,29 @@ th { color: var(--gold); font-weight: 600; }
   .full-field { grid-column: auto; }
   .check-grid { grid-template-columns: 1fr; }
 }
+
+/* V1.3 - Especialidades múltiplas */
+.especialidades-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.outra-especialidade-box {
+  margin-top: 12px;
+  max-width: 420px;
+}
+
+.outra-especialidade-box[hidden] {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .especialidades-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .especialidades-grid { grid-template-columns: 1fr; }
+}
+
+/* V1.4 Agenda */
+.top-actions,.agenda-nav,.agenda-filtros,.view-switch{display:flex;align-items:center;gap:8px}.agenda-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px}.agenda-nav strong{margin-left:8px;text-transform:capitalize}.agenda-filtros select{min-width:220px}.active-view{border-color:var(--gold)!important;color:var(--gold)!important}.agenda-calendar{overflow-x:auto}.calendar-columns{display:grid;grid-template-columns:repeat(7,minmax(170px,1fr));min-width:1190px;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden}.calendar-columns.one-day{grid-template-columns:1fr;min-width:0}.calendar-day{background:var(--panel);min-height:440px}.calendar-day-head{display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--panel-2);border-bottom:1px solid var(--border);text-transform:capitalize}.day-add{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--gold);cursor:pointer;font-size:18px}.calendar-day-body{padding:8px}.day-empty{color:var(--muted);font-size:13px;text-align:center;padding:28px 6px}.agenda-item{padding:10px;margin-bottom:8px;border-radius:10px;border:1px solid var(--border);background:var(--panel-2);cursor:pointer}.agenda-item strong,.agenda-item small{display:block}.agenda-item small{color:var(--muted);margin-top:3px}.agenda-time{color:var(--gold);font-size:12px;font-weight:700;margin-bottom:5px}.status-pill{display:inline-block;margin-top:8px;padding:4px 7px;border-radius:999px;border:1px solid var(--border);font-size:11px}.status-concluido{border-left:3px solid #7fba8d}.status-cancelado,.status-nao_compareceu{opacity:.65}.status-em_atendimento{border-left:3px solid var(--gold)}.status-confirmado{border-left:3px solid var(--terracotta)}.bloqueio-item{border-style:dashed;cursor:default;opacity:.8}.mini-link{border:0;background:transparent;padding:7px 0 0;cursor:pointer;font-size:12px}.danger-text{color:#ef9c9c}.modal-panel{position:relative;border-color:rgba(202,165,106,.25)}.modal-panel[hidden]{display:none}.icon-close{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:22px}.summary-strip{display:flex;justify-content:flex-end;align-items:center;gap:18px;margin-top:18px;padding:16px;border-radius:12px;background:var(--panel-2)}.summary-strip strong{color:var(--gold);font-size:22px}
+@media(max-width:900px){.agenda-toolbar{align-items:flex-start;flex-direction:column}.agenda-filtros{width:100%;justify-content:space-between}}@media(max-width:640px){.top-actions{width:100%;flex-direction:column}.top-actions button{width:100%}.agenda-nav{flex-wrap:wrap}.agenda-filtros{flex-direction:column;align-items:stretch}.agenda-filtros select{min-width:0}}

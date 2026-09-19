@@ -39,7 +39,28 @@
         <input type="hidden" id="profissionalId">
         <input id="profissionalNome" placeholder="Nome completo" required>
         <input id="profissionalTelefone" placeholder="Telefone">
-        <input id="profissionalEspecialidade" placeholder="Especialidade">
+        <div class="full-field">
+          <label>Especialidades</label>
+          <p class="muted small-text">Marque uma ou mais áreas de atuação.</p>
+
+          <div id="especialidadesProfissional" class="check-grid especialidades-grid">
+            <label class="check-card"><input type="checkbox" value="Cabeleireira"><span><strong>Cabeleireira</strong></span></label>
+            <label class="check-card"><input type="checkbox" value="Manicure"><span><strong>Manicure</strong></span></label>
+            <label class="check-card"><input type="checkbox" value="Pedicure"><span><strong>Pedicure</strong></span></label>
+            <label class="check-card"><input type="checkbox" value="Nail Designer"><span><strong>Nail Designer</strong></span></label>
+            <label class="check-card"><input type="checkbox" value="Alongamento de Unhas"><span><strong>Alongamento de Unhas</strong></span></label>
+            <label class="check-card"><input type="checkbox" value="Design de Sobrancelhas"><span><strong>Design de Sobrancelhas</strong></span></label>
+            <label class="check-card"><input type="checkbox" value="Depilação"><span><strong>Depilação</strong></span></label>
+            <label class="check-card"><input type="checkbox" value="Maquiagem"><span><strong>Maquiagem</strong></span></label>
+            <label class="check-card"><input type="checkbox" value="Estética"><span><strong>Estética</strong></span></label>
+            <label class="check-card outra-check"><input type="checkbox" id="especialidadeOutraCheck" value="__OUTRA__"><span><strong>Outra</strong></span></label>
+          </div>
+
+          <div id="especialidadeOutraBox" class="outra-especialidade-box" hidden>
+            <input id="especialidadeOutraTexto" placeholder="Digite a outra especialidade">
+          </div>
+        </div>
+
         <input id="profissionalComissao" type="number" min="0" max="100" step="0.01" value="0" placeholder="Comissão %">
 
         <div class="full-field">

@@ -1,36 +1,21 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LiS Beauty | Agenda</title>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="sidebar-brand"><div class="brand-mark small">LiS</div><div><strong>LiS Beauty</strong><span>Admin</span></div></div>
-      <nav>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="clientes.html">Clientes</a>
-        <a href="servicos.html">Serviços</a>
-        <a href="profissionais.html">Profissionais</a>
-        <a class="active" href="agenda.html">Agenda</a>
-      </nav>
-      <button id="logoutBtn" class="btn-secondary">Sair</button>
-    </aside>
-    <main class="content">
-      <header class="topbar"><div><h1>Agenda</h1><p class="muted">A agenda será ativada após o cadastro dos profissionais</p></div></header>
-      <section class="panel">
-        <div class="empty-state">
-          Estrutura preparada. O próximo passo será criar o calendário e o formulário de agendamento.
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js"></script>
-  <script src="js/auth.js"></script>
-</body>
-</html>
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LiS Beauty | Agenda</title><link rel="stylesheet" href="css/style.css"></head><body>
+<div class="app-shell"><aside class="sidebar"><div class="sidebar-brand"><div class="brand-mark small">LiS</div><div><strong>LiS Beauty</strong><span>Admin</span></div></div><nav><a href="dashboard.html">Dashboard</a><a href="clientes.html">Clientes</a><a href="servicos.html">Serviços</a><a href="profissionais.html">Profissionais</a><a class="active" href="agenda.html">Agenda</a></nav><button id="logoutBtn" class="btn-secondary">Sair</button></aside>
+<main class="content"><header class="topbar"><div><h1>Agenda</h1><p class="muted">Agendamentos, disponibilidade e bloqueios</p></div><div class="top-actions"><button id="novoBloqueioBtn" class="btn-secondary">+ Bloquear horário</button><button id="novoAgendamentoBtn" class="btn-primary top-action">+ Novo agendamento</button></div></header>
+<section class="panel agenda-toolbar"><div class="agenda-nav"><button id="anteriorBtn" class="btn-secondary">‹</button><button id="hojeBtn" class="btn-secondary">Hoje</button><button id="proximoBtn" class="btn-secondary">›</button><strong id="periodoAgenda"></strong></div><div class="agenda-filtros"><select id="filtroProfissional"><option value="">Todos os profissionais</option></select><div class="view-switch"><button id="visaoDiaBtn" class="btn-small">Dia</button><button id="visaoSemanaBtn" class="btn-small active-view">Semana</button></div></div></section>
+<section id="agendaGrid" class="agenda-calendar panel"><div class="empty-state">Carregando agenda...</div></section>
+<section id="agendamentoPanel" class="panel modal-panel" hidden><div class="panel-header"><h2 id="agendamentoFormTitle">Novo agendamento</h2><button type="button" class="icon-close" data-close="agendamentoPanel">×</button></div>
+<form id="agendamentoForm"><input type="hidden" id="agendamentoId"><div class="form-grid">
+<div><label>Cliente</label><select id="agendaCliente" required><option value="">Selecione</option></select></div>
+<div><label>Profissional</label><select id="agendaProfissional" required><option value="">Selecione</option></select></div>
+<div><label>Data</label><input id="agendaData" type="date" required></div>
+<div><label>Horário</label><select id="agendaHorario" required><option value="">Selecione profissional, serviços e data</option></select></div>
+<div class="full-field"><label>Serviços</label><div id="agendaServicos" class="check-grid"><div class="empty-state">Escolha um profissional.</div></div></div>
+<div><label>Duração prevista</label><input id="agendaDuracao" readonly value="0 min"></div><div><label>Valor previsto</label><input id="agendaValorTotal" readonly value="R$ 0,00"></div>
+<div><label>Desconto</label><input id="agendaDesconto" type="number" min="0" step=".01" value="0"></div><div><label>Valor pago</label><input id="agendaValorPago" type="number" min="0" step=".01" value="0"></div>
+<div><label>Forma de pagamento</label><select id="agendaFormaPagamento"><option value="">Não informado</option><option>Dinheiro</option><option>Pix</option><option>Cartão de débito</option><option>Cartão de crédito</option><option>Outro</option></select></div>
+<div><label>Status</label><select id="agendaStatus"><option value="agendado">Agendado</option><option value="confirmado">Confirmado</option><option value="em_atendimento">Em atendimento</option><option value="concluido">Concluído</option><option value="cancelado">Cancelado</option><option value="nao_compareceu">Não compareceu</option></select></div>
+<div class="full-field"><label>Observações</label><textarea id="agendaObservacoes"></textarea></div></div>
+<div class="summary-strip"><span>Total após desconto</span><strong id="agendaTotalFinal">R$ 0,00</strong></div><div class="form-actions"><button type="submit" class="btn-primary">Salvar agendamento</button><button type="button" class="btn-secondary" id="cancelarAgendamentoBtn">Cancelar</button></div><p id="agendamentoMessage" class="form-message"></p></form></section>
+<section id="bloqueioPanel" class="panel modal-panel" hidden><div class="panel-header"><h2>Novo bloqueio</h2><button type="button" class="icon-close" data-close="bloqueioPanel">×</button></div><form id="bloqueioForm" class="form-grid">
+<div><label>Profissional</label><select id="bloqueioProfissional" required><option value="">Selecione</option></select></div><div><label>Data</label><input id="bloqueioData" type="date" required></div><div><label>Início</label><input id="bloqueioInicio" type="time" required></div><div><label>Fim</label><input id="bloqueioFim" type="time" required></div><div class="full-field"><label>Motivo</label><input id="bloqueioMotivo" placeholder="Ex.: compromisso, folga"></div><div class="form-actions"><button type="submit" class="btn-primary">Salvar bloqueio</button><button type="button" class="btn-secondary" id="cancelarBloqueioBtn">Cancelar</button></div><p id="bloqueioMessage" class="form-message"></p></form></section>
+</main></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="js/config.js"></script><script src="js/auth.js"></script><script src="js/agenda.js"></script></body></html>
