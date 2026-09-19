@@ -1,0 +1,19 @@
+LiS Beauty V1.7.1 — Comissões dos Profissionais
+
+Não há SQL novo.
+
+Regra:
+- Comissão é calculada somente para atendimento com status Concluído.
+- Base = valor_total - desconto.
+- Comissão = base x percentual_comissao do profissional.
+- Líquido Studio = base - comissão.
+- Agendados, confirmados, em atendimento, cancelados e não comparecimentos não geram comissão.
+
+Incluído:
+- KPI Comissões.
+- KPI Líquido do Studio.
+- Comissão e líquido por atendimento.
+- Quadro Repasse por profissional.
+- CSV financeiro com comissão e líquido do Studio.
+
+Observação: esta versão calcula o valor "a pagar". Ela ainda não registra se o repasse ao profissional já foi efetivamente pago. Isso será uma etapa posterior, se desejado.
