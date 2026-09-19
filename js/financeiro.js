@@ -53,13 +53,38 @@ async function aplicarFinanceiro(){
   if(btn){btn.disabled=false;btn.textContent="Aplicar"}
  }
 }
+function exportarFinanceiro(){
+ const linhas=[
+  ["Data","Cliente","Profissional","Status","Previsto","Recebido","Comissão","Líquido Studio","Pagamento"]
+ ];
+ rows.forEach(x=>{
+  const previsto=Math.max(0,Number(x.valor_total||0)-Number(x.desconto||0));
+  const comissao=x.status==="concluido"?com(x):0;
+  linhas.push([
+   new Date(x.inicio).toLocaleString("pt-BR"),
+   clients.find(c=>c.id===x.cliente_id)?.nome||"",
+   pros.find(p=>p.id===x.profissional_id)?.nome||"",
+   labels[x.status]||x.status,
+   previsto.toFixed(2),
+   Number(x.valor_pago||0).toFixed(2),
+   comissao.toFixed(2),
+   (x.status==="concluido"?(baseCom(x)-comissao):0).toFixed(2),
+   x.forma_pagamento||""
+  ]);
+ });
+ csv("lis-beauty-financeiro.csv",linhas);
+}
 document.addEventListener("DOMContentLoaded",()=>{
  defaults("finInicio","finFim");
- const aplicar=$("finAplicar"),fechar=$("fecharRepasse"),cancelar=$("cancelarRepasse"),form=$("repasseForm"),exp=$("exportFinanceiro");
+ const aplicar=$("finAplicar");
+ const fechar=$("fecharRepasse");
+ const cancelar=$("cancelarRepasse");
+ const form=$("repasseForm");
+ const exp=$("exportFinanceiro");
  if(aplicar) aplicar.addEventListener("click",aplicarFinanceiro);
  if(fechar) fechar.addEventListener("click",closeRepasse);
  if(cancelar) cancelar.addEventListener("click",closeRepasse);
  if(form) form.addEventListener("submit",saveRepasse);
- if(exp) exp.addEventListener("click",()=>csv("lis-beauty-financeiro.csv",[["Data","Cliente","Profissional","Status","Previsto","Recebido","Comissão","Líquido Studio","Pagamento"],...rows.map(x=>[new Date(x.inicio).toLocaleString("pt-BR"),clients.find(c=>c.id===x.cliente_id)?.nome||"",pros.find(p=>p.id===x.profissional_id)?.nome||"",labels[x.status]||x.status,Math.max(0,Number(x.valor_total||0)-Number(x.desconto||0)).toFixed(2),Number(x.valor_pago||0).toFixed(2),x.status==="concluido"?com(x).toFixed(2):"0.00",x.status==="concluido"?(baseCom(x)-com(x)).toFixed(2):"0.00",x.forma_pagamento||""]]));
- setTimeout(aplicarFinanceiro,150);
+ if(exp) exp.addEventListener("click",exportarFinanceiro);
+ aplicarFinanceiro();
 });
