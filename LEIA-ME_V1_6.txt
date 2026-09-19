@@ -1,0 +1,22 @@
+LiS Beauty V1.6 — Operação do Atendimento
+
+Não há SQL novo nesta versão.
+
+Novidades:
+- Ação rápida Confirmar em agendamentos com status Agendado.
+- Ação rápida Iniciar em agendamentos Confirmados.
+- Concluir atendimento com registro do valor recebido e forma de pagamento.
+- Cancelar atendimento diretamente no card; o horário volta a ficar disponível.
+- Edição completa do agendamento continua disponível clicando no conteúdo do card.
+- Cards da Agenda melhorados para nomes longos.
+- Especialidades dos profissionais exibidas como chips.
+- Dashboard continua lendo os dados do Supabase e reflete status/pagamentos ao recarregar.
+
+Publicação:
+1. Substitua os arquivos do repositório pelos desta pasta.
+2. Commit to main.
+3. Push origin.
+4. Atualize o site com Ctrl+F5.
+
+Teste sugerido:
+Agendado -> Confirmar -> Iniciar -> Concluir -> informar pagamento -> abrir Dashboard.

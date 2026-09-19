@@ -1,4 +1,8 @@
 
+function renderEspecialidades(valor){
+ return String(valor||"").split(",").map(x=>x.trim()).filter(Boolean).map(x=>`<span class="specialty-chip">${esc(x)}</span>`).join("") || '<span class="muted">Não informada</span>';
+}
+
 let profissionaisCache = [];
 let servicosCache = [];
 

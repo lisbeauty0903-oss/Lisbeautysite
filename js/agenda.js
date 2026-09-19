@@ -43,7 +43,21 @@ async function render(){
   return `<div class="calendar-day"><div class="calendar-day-head"><strong>${d.toLocaleDateString("pt-BR",{weekday:"short",day:"2-digit",month:"2-digit"})}</strong><button class="day-add" onclick="newDate('${k}')">+</button></div><div class="calendar-day-body">${items.length?items.map(z=>{
    if(z.t==="b"){let x=z.x,p=P.find(q=>q.id===x.profissional_id);return `<article class="agenda-item bloqueio-item"><div class="agenda-time">${hora(x.inicio)}–${hora(x.fim)}</div><strong>Bloqueado</strong><small>${esc(p?.nome||"")}</small><small>${esc(x.motivo||"Indisponível")}</small><button class="mini-link danger-text" onclick="delBlock('${x.id}')">Remover</button></article>`}
    let x=z.x,c=C.find(q=>q.id===x.cliente_id),p=P.find(q=>q.id===x.profissional_id),sn=(m[x.id]||[]).map(id=>S.find(s=>s.id===id)?.nome).filter(Boolean).join(", ");
-   return `<article class="agenda-item status-${x.status}" onclick="editA('${x.id}')"><div class="agenda-time">${hora(x.inicio)}–${hora(x.fim)}</div><strong>${esc(c?.nome||"Cliente")}</strong><small>${esc(p?.nome||"")}</small><small>${esc(sn)}</small><span class="status-pill">${labels[x.status]||x.status}</span></article>`}).join(""):'<div class="day-empty">Sem horários</div>'}</div></div>`}).join("")}</div>`;
+   return `<article class="agenda-item status-${x.status}">
+   <div class="agenda-card-main" onclick="editA('${x.id}')">
+    <div class="agenda-time">${hora(x.inicio)}–${hora(x.fim)}</div>
+    <strong>${esc(c?.nome||"Cliente")}</strong>
+    <small class="agenda-prof-name">${esc(p?.nome||"")}</small>
+    <small class="agenda-services-name">${esc(sn)}</small>
+    <span class="status-pill">${labels[x.status]||x.status}</span>
+   </div>
+   <div class="agenda-quick-actions">
+    ${x.status==="agendado"?`<button onclick="event.stopPropagation();quickStatus('${x.id}','confirmado')">Confirmar</button>`:""}
+    ${x.status==="confirmado"?`<button onclick="event.stopPropagation();quickStatus('${x.id}','em_atendimento')">Iniciar</button>`:""}
+    ${x.status==="em_atendimento"?`<button onclick="event.stopPropagation();openFinish('${x.id}')">Concluir</button>`:""}
+    ${!["concluido","cancelado"].includes(x.status)?`<button class="danger-text" onclick="event.stopPropagation();cancelA('${x.id}')">Cancelar</button>`:""}
+   </div>
+  </article>`}).join(""):'<div class="day-empty">Sem horários</div>'}</div></div>`}).join("")}</div>`;
 }
 function profServices(sel=[]){
  let pid=$("agendaProfissional").value;if(!pid){$("agendaServicos").innerHTML='<div class="empty-state">Escolha um profissional.</div>';return}
@@ -79,6 +93,37 @@ async function saveA(e){e.preventDefault();try{let id=$("agendamentoId").value,c
  if(id)r=await supabaseClient.from("agendamentos").update(payload).eq("id",id);else r=await supabaseClient.from("agendamentos").insert(payload).select("id").single();if(r.error)throw r.error;let aid=id||r.data.id;
  r=await supabaseClient.from("agendamento_servicos").delete().eq("agendamento_id",aid);if(r.error)throw r.error;r=await supabaseClient.from("agendamento_servicos").insert(x.map(s=>({agendamento_id:aid,servico_id:s.id,valor:s.val,duracao_minutos:s.d})));if(r.error)throw r.error;
  $("agendamentoMessage").textContent="Agendamento salvo com sucesso.";$("agendamentoMessage").className="form-message success";await events();setTimeout(()=>closeP("agendamentoPanel"),400)}catch(e){$("agendamentoMessage").textContent=e.message||"Erro ao salvar.";$("agendamentoMessage").className="form-message error"}}
+
+window.quickStatus=async(id,status)=>{
+ try{
+  let r=await supabaseClient.from("agendamentos").update({status}).eq("id",id);
+  if(r.error)throw r.error;
+  await events();
+ }catch(e){alert("Não foi possível atualizar o status: "+(e.message||"erro"))}
+};
+window.cancelA=async id=>{
+ if(!confirm("Cancelar este agendamento? O horário será liberado."))return;
+ try{
+  let r=await supabaseClient.from("agendamentos").update({status:"cancelado"}).eq("id",id);
+  if(r.error)throw r.error;
+  await events();
+ }catch(e){alert("Não foi possível cancelar: "+(e.message||"erro"))}
+};
+window.openFinish=async id=>{
+ let a=A.find(x=>x.id===id); if(!a)return;
+ let pago=prompt("Valor recebido neste atendimento:",String(Number(a.valor_pago||0).toFixed(2)).replace(".",","));
+ if(pago===null)return;
+ let valor=Number(String(pago).replace(",","."));
+ if(Number.isNaN(valor)||valor<0){alert("Informe um valor válido.");return}
+ let forma=prompt("Forma de pagamento (Pix, Dinheiro, Cartão de débito, Cartão de crédito ou Outro):",a.forma_pagamento||"Pix");
+ if(forma===null)return;
+ try{
+  let r=await supabaseClient.from("agendamentos").update({status:"concluido",valor_pago:valor,forma_pagamento:forma.trim()||null}).eq("id",id);
+  if(r.error)throw r.error;
+  await events();
+ }catch(e){alert("Não foi possível concluir: "+(e.message||"erro"))}
+};
+
 async function saveB(e){e.preventDefault();try{let pid=$("bloqueioProfissional").value,date=$("bloqueioData").value,a=$("bloqueioInicio").value,z=$("bloqueioFim").value;if(!pid||!date||!a||!z)throw Error("Preencha os campos.");if(z<=a)throw Error("O fim deve ser maior que o início.");let r=await supabaseClient.from("bloqueios_agenda").insert({profissional_id:pid,inicio:dt(date,a).toISOString(),fim:dt(date,z).toISOString(),motivo:$("bloqueioMotivo").value.trim()||null});if(r.error)throw r.error;$("bloqueioMessage").textContent="Bloqueio criado.";$("bloqueioMessage").className="form-message success";await events();setTimeout(()=>closeP("bloqueioPanel"),400)}catch(e){$("bloqueioMessage").textContent=e.message;$("bloqueioMessage").className="form-message error"}}
 window.delBlock=async id=>{if(!confirm("Remover este bloqueio?"))return;let r=await supabaseClient.from("bloqueios_agenda").delete().eq("id",id);if(r.error)return alert("Erro ao remover.");await events()};
 document.addEventListener("DOMContentLoaded",async()=>{try{await base();await events();$("novoAgendamentoBtn").onclick=()=>{clearA();$("agendaData").value=ds(new Date());openP("agendamentoPanel")};$("novoBloqueioBtn").onclick=()=>{$("bloqueioForm").reset();$("bloqueioData").value=ds(new Date());openP("bloqueioPanel")};$("cancelarAgendamentoBtn").onclick=()=>closeP("agendamentoPanel");$("cancelarBloqueioBtn").onclick=()=>closeP("bloqueioPanel");document.querySelectorAll("[data-close]").forEach(x=>x.onclick=()=>closeP(x.dataset.close));$("agendaProfissional").onchange=async()=>{profServices([]);$("agendaDuracao").value="0 min";$("agendaValorTotal").value="R$ 0,00";$("agendaTotalFinal").textContent=money(0);$("agendaHorario").value="";$("agendaHorario").disabled=true;await slots()};$("agendaData").onchange=async()=>{$("agendaHorario").value="";await slots()};$("agendaDesconto").oninput=summary;$("agendamentoForm").onsubmit=saveA;$("bloqueioForm").onsubmit=saveB;$("filtroProfissional").onchange=render;
