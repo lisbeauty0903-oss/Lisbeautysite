@@ -65,6 +65,8 @@ function limparFormularioProfissional() {
   profissionalForm.reset();
   profissionalId.value = "";
   profissionalComissao.value = "0";
+  profissionalEmail.value = "";
+  acessoProfissionalStatus.textContent = "O convite será enviado ao cadastrar o profissional.";
   profissionalFormTitle.textContent = "Novo profissional";
   profissionalMessage.textContent = "";
   limparEspecialidades();
@@ -128,6 +130,8 @@ function renderProfissionais() {
         <tr>
           <th>Nome</th>
           <th>Telefone</th>
+          <th>E-mail</th>
+          <th>Acesso</th>
           <th>Especialidades</th>
           <th>Comissão</th>
           <th>Ações</th>
@@ -138,6 +142,8 @@ function renderProfissionais() {
           <tr>
             <td>${esc(p.nome)}</td>
             <td>${esc(p.telefone)}</td>
+            <td>${esc(p.email || "—")}</td>
+            <td><span class="access-badge access-${esc(p.acesso_status||"nao_criado")}">${esc(({nao_criado:"Não criado",convite_enviado:"Convite enviado",ativo:"Ativo"}[p.acesso_status]||p.acesso_status||"Não criado"))}</span></td>
             <td>${esc((p.especialidades || []).join(", "))}</td>
             <td>${Number(p.percentual_comissao || 0).toFixed(2).replace(".", ",")}%</td>
             <td class="actions-cell">
@@ -153,7 +159,7 @@ function renderProfissionais() {
 async function carregarProfissionais() {
   const { data, error } = await supabaseClient
     .from("profissionais")
-    .select("id,nome,telefone,especialidades,percentual_comissao,ativo")
+    .select("id,nome,telefone,email,especialidades,percentual_comissao,ativo,perfil_id,acesso_status")
     .eq("ativo", true)
     .order("nome");
 
@@ -213,6 +219,8 @@ window.editarProfissional = async id => {
   profissionalId.value = p.id;
   profissionalNome.value = p.nome || "";
   profissionalTelefone.value = p.telefone || "";
+  profissionalEmail.value = p.email || "";
+  acessoProfissionalStatus.textContent = p.acesso_status === "ativo" ? "Acesso ativo." : p.acesso_status === "convite_enviado" ? "Convite enviado. Você pode reenviar o acesso." : "Acesso ainda não criado.";
   profissionalComissao.value = p.percentual_comissao ?? 0;
 
   preencherEspecialidades(p.especialidades || []);
@@ -362,6 +370,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const payload = {
         nome: profissionalNome.value.trim(),
         telefone: profissionalTelefone.value.trim() || null,
+        email: profissionalEmail.value.trim().toLowerCase(),
         especialidades,
         percentual_comissao: Number(profissionalComissao.value || 0),
         ativo: true
@@ -389,9 +398,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       await salvarRelacionamentos(idSalvo);
 
+      if (!id) {
+        profissionalMessage.textContent = "Cadastro salvo. Enviando convite de acesso...";
+        const { data: sess } = await supabaseClient.auth.getSession();
+        const token = sess?.session?.access_token;
+        const resp = await fetch(`${SUPABASE_URL}/functions/v1/criar-acesso-profissional`, {
+          method: "POST",
+          headers: {"Content-Type":"application/json","Authorization":`Bearer ${token}`},
+          body: JSON.stringify({profissional_id:idSalvo})
+        });
+        const retorno = await resp.json().catch(()=>({}));
+        if (!resp.ok) throw new Error(retorno.error || "Profissional salvo, mas não foi possível enviar o convite.");
+        if (retorno.whatsapp_url) {
+          acessoProfissionalStatus.innerHTML = `Convite enviado por e-mail. <a class="btn-small" target="_blank" href="${retorno.whatsapp_url}">Enviar aviso no WhatsApp</a>`;
+        }
+      }
+
       profissionalMessage.textContent = id
         ? "Profissional atualizado com sucesso."
-        : "Profissional cadastrado com sucesso.";
+        : "Profissional cadastrado e convite de acesso enviado por e-mail.";
 
       profissionalMessage.className = "form-message success";
 

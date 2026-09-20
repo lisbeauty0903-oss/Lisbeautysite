@@ -515,3 +515,9 @@ th { color: var(--gold); font-weight: 600; }
 
 /* V2.1 */
 .professional-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0}.professional-kpis article,.professional-commission-grid>div{background:#211d1a;border:1px solid var(--border);border-radius:15px;padding:17px}.professional-kpis span,.professional-kpis strong,.professional-kpis small,.professional-commission-grid span,.professional-commission-grid strong{display:block}.professional-kpis span,.professional-kpis small,.professional-commission-grid span{color:var(--muted)}.professional-kpis strong,.professional-commission-grid strong{color:var(--gold);font-size:24px;margin:5px 0}.professional-agenda{display:grid;gap:9px}.professional-appointment{display:grid;grid-template-columns:90px 1fr auto;align-items:center;gap:14px;padding:12px 14px;border:1px solid var(--border);border-left:4px solid #c69c5b;border-radius:11px;background:#191613}.professional-appointment b,.professional-appointment span,.professional-time strong,.professional-time small{display:block}.professional-appointment div:nth-child(2) span,.professional-time small{color:var(--muted);font-size:12px}.professional-time strong{color:var(--gold)}.professional-commission-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.professional-notice{border-color:#7a5d2c}@media(max-width:900px){.professional-kpis,.professional-commission-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* V2.1.1 — Acesso profissional */
+.access-box{padding:12px 14px;border:1px solid var(--border);border-radius:12px;background:#191613}
+.access-status{margin-top:7px;color:var(--muted);font-size:13px}.access-status a{margin-left:8px}
+.access-badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.access-nao_criado{background:#39332d;color:#c7b9aa}.access-convite_enviado{background:#443821;color:#e0b86b}.access-ativo{background:#243b2a;color:#86c794}

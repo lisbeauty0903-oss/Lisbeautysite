@@ -1,0 +1,23 @@
+LiS Beauty V2.1.1 — Acesso automático do profissional
+
+O cadastro de profissional agora exige e-mail e cria o acesso de forma segura.
+
+FLUXO
+1. Administradora cadastra profissional.
+2. Site salva cadastro.
+3. Edge Function cria usuário no Supabase Authentication.
+4. Vincula auth user -> perfis -> profissionais.perfil_id.
+5. Supabase envia convite por e-mail para o profissional definir a própria senha.
+6. Sistema disponibiliza botão para enviar um aviso no WhatsApp do profissional, sem transmitir senha.
+7. Profissional entra em minha-area.html.
+
+IMPORTANTE
+Não enviamos senha permanente por e-mail/WhatsApp. O profissional define a própria senha pelo link seguro.
+
+INSTALAÇÃO
+1. Execute SUPABASE_V2_1_1_ACESSO_PROFISSIONAL.sql UMA VEZ.
+2. Publique/deploy a Edge Function supabase/functions/criar-acesso-profissional.
+3. Publique os arquivos do site.
+4. Cadastre um profissional de teste com e-mail válido.
+
+A Edge Function precisa das variáveis padrão SUPABASE_URL, SUPABASE_ANON_KEY e SUPABASE_SERVICE_ROLE_KEY no ambiente do Supabase. A SERVICE_ROLE nunca deve ir para o navegador/GitHub.
