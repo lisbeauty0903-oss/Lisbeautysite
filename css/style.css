@@ -521,3 +521,11 @@ th { color: var(--gold); font-weight: 600; }
 .access-status{margin-top:7px;color:var(--muted);font-size:13px}.access-status a{margin-left:8px}
 .access-badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:700}
 .access-nao_criado{background:#39332d;color:#c7b9aa}.access-convite_enviado{background:#443821;color:#e0b86b}.access-ativo{background:#243b2a;color:#86c794}
+
+/* V2.1.1 corrigida */
+#profissionaisLista table{table-layout:auto;min-width:1080px}
+#profissionaisLista th:nth-child(3),#profissionaisLista td:nth-child(3){min-width:190px;white-space:nowrap}
+#profissionaisLista th:nth-child(4),#profissionaisLista td:nth-child(4){min-width:125px;white-space:nowrap}
+#profissionaisLista th:last-child,#profissionaisLista td:last-child{min-width:285px}
+.actions-cell{white-space:nowrap}.access-action{border-color:#b78a45;color:#d7b16f}
+.access-ok{display:inline-block;padding:6px 9px;border-radius:999px;background:#243b2a;color:#86c794;font-size:11px;font-weight:700}

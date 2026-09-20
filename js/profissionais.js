@@ -148,6 +148,9 @@ function renderProfissionais() {
             <td>${Number(p.percentual_comissao || 0).toFixed(2).replace(".", ",")}%</td>
             <td class="actions-cell">
               <button class="btn-small" onclick="editarProfissional('${p.id}')">Editar</button>
+              ${p.acesso_status === "ativo"
+                ? '<span class="access-ok">Acesso ativo</span>'
+                : `<button class="btn-small access-action" onclick="criarAcessoProfissional('${p.id}')">${p.acesso_status === "convite_enviado" ? "Reenviar acesso" : "Criar acesso"}</button>`}
               <button class="btn-small danger" onclick="excluirProfissional('${p.id}')">Excluir</button>
             </td>
           </tr>
@@ -229,6 +232,42 @@ window.editarProfissional = async id => {
 
   await carregarRelacionamentosProfissional(id);
   profissionalFormPanel.scrollIntoView({ behavior: "smooth" });
+};
+
+window.criarAcessoProfissional = async id => {
+  const p = profissionaisCache.find(x => x.id === id);
+  if (!p) return;
+  if (!p.email) {
+    alert("Informe primeiro o e-mail de acesso. Clique em Editar, preencha o e-mail e salve.");
+    await editarProfissional(id);
+    profissionalEmail.focus();
+    return;
+  }
+  const pergunta = p.acesso_status === "convite_enviado"
+    ? `Reenviar o acesso para ${p.email}?`
+    : `Criar o acesso de ${p.nome} e enviar o convite para ${p.email}?`;
+  if (!confirm(pergunta)) return;
+  try {
+    const { data: sess } = await supabaseClient.auth.getSession();
+    const token = sess?.session?.access_token;
+    if (!token) throw new Error("Sessão expirada. Entre novamente.");
+    const resp = await fetch(`${SUPABASE_URL}/functions/v1/criar-acesso-profissional`, {
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},
+      body:JSON.stringify({profissional_id:id})
+    });
+    const retorno = await resp.json().catch(()=>({}));
+    if (!resp.ok) throw new Error(retorno.error || "Não foi possível criar o acesso.");
+    alert("Convite de acesso enviado por e-mail com sucesso.");
+    await carregarProfissionais();
+    if (retorno.whatsapp_url && confirm("Deseja abrir o WhatsApp para enviar também o aviso de acesso?")) {
+      window.open(retorno.whatsapp_url,"_blank","noopener");
+    }
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "Erro ao criar acesso.");
+    await carregarProfissionais();
+  }
 };
 
 window.excluirProfissional = async id => {
@@ -398,25 +437,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       await salvarRelacionamentos(idSalvo);
 
-      if (!id) {
-        profissionalMessage.textContent = "Cadastro salvo. Enviando convite de acesso...";
-        const { data: sess } = await supabaseClient.auth.getSession();
-        const token = sess?.session?.access_token;
-        const resp = await fetch(`${SUPABASE_URL}/functions/v1/criar-acesso-profissional`, {
-          method: "POST",
-          headers: {"Content-Type":"application/json","Authorization":`Bearer ${token}`},
-          body: JSON.stringify({profissional_id:idSalvo})
-        });
-        const retorno = await resp.json().catch(()=>({}));
-        if (!resp.ok) throw new Error(retorno.error || "Profissional salvo, mas não foi possível enviar o convite.");
-        if (retorno.whatsapp_url) {
-          acessoProfissionalStatus.innerHTML = `Convite enviado por e-mail. <a class="btn-small" target="_blank" href="${retorno.whatsapp_url}">Enviar aviso no WhatsApp</a>`;
-        }
-      }
-
       profissionalMessage.textContent = id
         ? "Profissional atualizado com sucesso."
-        : "Profissional cadastrado e convite de acesso enviado por e-mail.";
+        : "Profissional cadastrado. Use “Criar acesso” na lista para enviar o convite.";
 
       profissionalMessage.className = "form-message success";
 

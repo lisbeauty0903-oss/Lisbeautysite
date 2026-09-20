@@ -1,0 +1,16 @@
+LiS Beauty V2.1.1 CORRIGIDA
+
+- Profissional existente não precisa ser recadastrado.
+- Informe o e-mail em Editar e salve.
+- A lista passa a exibir Criar acesso.
+- Após convite, a ação vira Reenviar acesso.
+- Cadastro e login ficam ligados por perfil_id.
+- O cadastro de um novo profissional NÃO cria outro registro ao gerar acesso.
+- Coluna E-mail ajustada visualmente.
+- WhatsApp é apenas aviso, sem senha.
+
+BANCO:
+As colunas email e acesso_status já foram criadas; não execute novo SQL para esta correção.
+
+EDGE FUNCTION:
+Publique supabase/functions/criar-acesso-profissional/index.ts antes de testar Criar acesso.
