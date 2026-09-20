@@ -1,0 +1,9 @@
+LiS Beauty V2.1 — Área do Profissional
+
+HÁ SQL NOVO: execute SUPABASE_V2_1_AREA_PROFISSIONAL.sql uma vez.
+
+Inclui minha-area.html com agenda individual, atendimentos de hoje, produção, percentual, comissão gerada, repasses recebidos e saldo.
+
+Para testar com Simone: crie um usuário próprio no Supabase Authentication, crie/ajuste o registro correspondente em perfis como tipo_usuario='profissional' e vincule o UUID do usuário ao campo profissionais.perfil_id da Simone.
+
+Nesta etapa o acesso profissional é somente leitura.
