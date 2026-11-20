@@ -1,0 +1,14 @@
+LiS Beauty V2.1.2 — autenticação e convites
+
+1. Publique os arquivos deste pacote na raiz do repositório GitHub Pages. Não publique a pasta .git.
+2. Em Supabase Authentication > URL Configuration > Redirect URLs, ADICIONE:
+   https://lisbeauty0903-oss.github.io/Lisbeautysite/definir-senha.html
+3. ATENÇÃO: a função atualmente publicada redireciona para index.html. Atualize na Edge Function criar-acesso-profissional o valor de REDIRECT_URL para:
+   https://lisbeauty0903-oss.github.io/Lisbeautysite/definir-senha.html
+   Mantenha as outras correções da função já publicada. NÃO substitua pela versão antiga do ZIP.
+4. Teste o login de administradora após publicar, antes de convidar Simone.
+5. Salve o e-mail de Simone em Profissionais. Só depois use Criar acesso.
+6. O convite chega por e-mail. O link permite definir senha e acessar Minha Área.
+7. WhatsApp é somente aviso manual, não autenticação automática.
+
+IMPORTANTE: regras de acesso a dados precisam continuar protegidas pelas políticas RLS do Supabase. O bloqueio visual de páginas não substitui RLS.
