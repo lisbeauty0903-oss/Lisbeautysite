@@ -251,7 +251,7 @@ window.criarAcessoProfissional = async id => {
     const { data: sess } = await supabaseClient.auth.getSession();
     const token = sess?.session?.access_token;
     if (!token) throw new Error("Sessão expirada. Entre novamente.");
-    const resp = await fetch(`${SUPABASE_URL}/functions/v1/criar-acesso-profissional`, {
+    const resp = await fetch(`${SUPABASE_URL}/functions/v1/lis-criar-acesso-profissional`, {
       method:"POST",
       headers:{"Content-Type":"application/json","Authorization":`Bearer ${token}`},
       body:JSON.stringify({profissional_id:id})
